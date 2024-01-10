@@ -20,8 +20,15 @@
 |--|
 |Biggest Challenge in last 3 years
 Rate yourslef out of 10
-where you want to be 3-5 years|
-
+where you want to be 3-5 years
+**Simplicfication and effectiveness
+Risk management
+Client Centricity
+Sustainable Impact
+Accountability with Integrity
+Collaboration
+Innovation
+**
 </td></tr> </table>
 
 <table>
