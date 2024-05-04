@@ -84,13 +84,14 @@ Innovation
 - Different Architecture Styles - Monolith vs Distributed
 - Clean Architecture Or Hexagonal Architecture 
 
-- 
 # Security
 - Owasp
-
 - - 
 # Other
 - what kind of DB pool used
+- logging
+- Testing mocking/junit
+- What is MVC and Dispatcherservlet
 - 
 # links 
 https://github.com/sudheerj/reactjs-interview-questions
