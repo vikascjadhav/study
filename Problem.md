@@ -8,3 +8,7 @@ Find whether singly linked list has loop
 ## Streams Example - Order Example
 
 - Order and Product. Customers can place multiple orders and each order would contain a number of products.
+### Order
+- id
+- totalamt
+- 
