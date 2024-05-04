@@ -87,6 +87,11 @@ Innovation
 - 
 # Security
 - Owasp
+
+- - 
+# Other
+- what kind of DB pool used
+- 
 # links 
 https://github.com/sudheerj/reactjs-interview-questions
 
