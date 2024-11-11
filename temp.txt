@@ -1,39 +1,68 @@
-Strengths:
-Ankush has demonstrated strong expertise in Java backend development and consistently takes ownership of his tasks, showing a high level of responsibility. He has a good understanding of end-to-end requirements and provides effective solutions. His collaboration with the FMS team on AWI and communication management on technical topics is commendable. Additionally, his thorough testing of various scenarios for AWI and successful delivery of the Appr Workflow highlight his commitment and attention to detail.
-
-Areas for Growth:
-To further enhance his skills, Ankush should focus on gaining more knowledge in cloud technologies, particularly Azure. Upskilling in architecture would also be beneficial, enabling him to contribute more effectively to the design and scalability of projects.
-
-Action Steps:
-
-	•	Enroll in the CE (Cloud Education) program to build skills in Azure and architectural principles.
-
-Overall:
-Ankush has been performing well and should continue leveraging his strengths while focusing on cloud and architecture skills to expand his impact.
 
 
+Successfully set up a new team and OME pod in India, tackling the challenge of building a new team and ensuring the OME pod's operational setup, laying the foundation for future growth and innovation.
 
+Led key initiatives for Taiwan’s Order Manager (OM) journey, driving critical projects such as the Core Banking Adapter, Contact Management, Approval Workflow Interface, and Client Instructions, aligning them with regional needs and business objectives.
 
+Collaborated with security, technical, and domain architects to design and implement a Client Authentication solution to ensure full compliance with regulatory requirements.
 
+Delivered the Core Banking Adapter solution in production, facilitating order bookings in Midas and cash balance checks in Topaz, enhancing transaction accuracy and operational efficiency.
 
-Aman has demonstrated strong dedication, a proactive attitude, and a commitment to continuous learning. He quickly learned React and successfully delivered the front-end development for the Approval Workflow interface. Aman has shown resilience in tackling complex challenges, such as resolving AAD authentication issues, and his strong work ethic is evident in his willingness to take ownership and work independently. He has even been available on weekends for urgent tasks, highlighting his commitment to timely delivery. Moving forward, Aman is encouraged to deepen his technical expertise, focusing on specific areas as part of a T-shaped learning approach to build a well-rounded skill set.
+Successfully implemented the Approval Workflow Interface solution up to TE2, streamlining the approval process and improving workflow efficiency.
 
------
+Aligned Contact Management solution with the Global BAC stream for Taiwan, ensuring seamless integration with global systems while meeting local requirements.
 
-Strengths:
+Enhanced the impact of the OME application by adopting a multi-entity, multi-location design, leading to significant cost reductions and operational efficiencies.
 
-Strong Work Ethic: Aman consistently demonstrates dedication and reliability, often taking ownership of tasks and working independently with minimal supervision. His willingness to make himself available on weekends for urgent deliveries further underscores his commitment to achieving results.
+Focused on best practices in software design and clean coding, ensuring robust MERs, adherence to regulatory compliance, and effective Azure cost monitoring to optimize system performance and expenses.
 
-Quick Learner and Eager to Learn: Aman’s adaptability and enthusiasm for learning new technologies are commendable. He swiftly learned React and delivered the entire front-end for the Approval Workflow interface in a short period.
+Engaged stakeholders at every stage of product delivery, ensuring clear communication, alignment, and satisfaction throughout the project lifecycle.
 
-Persistence and Problem-Solving: Aman has shown resilience and determination, particularly when resolving AAD authentication issues. He tackles challenges with a persistent approach, contributing significantly to the team’s success.
+Took on the challenge of setting up a new team and successfully delivered projects in line with WMPC tech guidelines, demonstrating strong leadership and project management skills.
 
-Areas for Improvement:
+Achieved Gold Certified Engineer status as part of my continuous professional development and commitment to upskilling, strengthening my technical expertise.
 
-Deepening Technical Skills: To strengthen his expertise, Aman should focus on gaining in-depth knowledge in specific technical areas.
-
-Structured Learning Approach (T-shaped Learning): Aman could benefit from aligning his learning to the T-shaped model, where he builds broad knowledge across areas while developing deep expertise in selected topics. This structured approach will support his growth in technical proficiency.
+Looking ahead to 2025, I aim to leverage the institutional knowledge and experience gained this year to drive even greater impact and further improve delivery outcomes for future projects.
 
 
 
+----------------------
+Accountability with Integrity: "I have taken ownership of SCC components, including the core banking adapter, contact management, approval workflow interface, and client instructions, leading end-to-end delivery for these initiatives. I have organized and trained my team to ensure effective delivery, fostering a collaborative approach to achieve our goals. I’ve proposed solutions to address business challenges and lead from the front on technical decisions, driving continuous improvement in our processes."
 
+Collaboration: "I engage stakeholders regularly for feedback, as demonstrated with the contact management project, where I presented prototypes and integrated user feedback to refine the product. I collaborate with various IT and business teams to ensure smooth delivery, such as working with the Taiwan Crew for regional integrations, Topaz and PCM digital teams for system integration, and Tech Services for authentication solutions. By fostering these cross-functional partnerships, I help deliver solutions that align with strategic business requirements and improve overall project success."
+
+Innovation: "To improve project quality and efficiency, I actively seek opportunities to enhance code quality, implement clean coding practices, optimize cloud usage, and reduce costs. By continuously looking for ways to improve our processes and designs, I contribute to the long-term success of the projects and ensure we deliver innovative and cost-effective solutions."
+
+
+----------------
+
+
+Effective Delegation: I see an opportunity to improve my delegation skills, ensuring tasks are distributed more efficiently among team members. This would allow me to focus on higher-level strategic decisions while empowering my team to take ownership of key areas, improving overall team productivity.
+
+Impact on Technical Architectural Decisions: I aim to be more impactful in shaping technical architecture decisions by gaining a deeper understanding of design principles and contributing more to high-level architectural discussions. This will allow me to influence the direction of solutions more effectively and ensure better alignment with long-term objectives.
+
+Understanding Product Management: Gaining a deeper understanding of product management practices will help me better align technical decisions with product goals.
+
+Product Branding and Multi-Location/Use Case Focus: I aim to improve in branding and socializing product builds for multi-location and multi-use case scenarios
+
+Further Drill Down on Azure Cloud Usage and Costs: I see an opportunity to further explore and optimize our Azure cloud usage, specifically focusing on cost management. 
+
+Eager to growing institutional and technical knowledge to further increase impact and drive high-quality delivery for our projects.
+-----------------------
+
+
+
+
+
+Taken up challenge to setup new team and Successfully setup OME pod setup.
+Driving key initiatives for Order manager journey fo Taiwan such core banking adapter, contact management, approval workflow interface, client instructions
+- Working with security/technical/domain architects to design and implement Client Authentication solution for regulatory compliance.
+- Successfully delivered Core Banking Adapter solution in production for booking orders in Midas and Cash Balance check in Topaz.
+- Successfully implemented Approval Workflow interface solution till TE2.
+- Aligned Contact Management solution with Global BAC stream for Taiwan location.
+- Elevating impact of OME application by designing those as per multi entity/location design there by reducing cost
+- Worked on good design practices, clean coding practices, MERs, regulatory compliances, Azure cost monitoring and
+- Kept stakeholders engaged in all stages of product delivery 
+- Biggest challenge taken for setting of new team and getting projects delivered with new team per WMPC tech guidelines.
+- As part of upskilling - achieved Gold Cerfied endigineer standard.
+- As we step in to 2025 would like to enhance impact and delivery with instituional knowledge gained 
