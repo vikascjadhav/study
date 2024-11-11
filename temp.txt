@@ -1,1 +1,39 @@
+Strengths:
+Ankush has demonstrated strong expertise in Java backend development and consistently takes ownership of his tasks, showing a high level of responsibility. He has a good understanding of end-to-end requirements and provides effective solutions. His collaboration with the FMS team on AWI and communication management on technical topics is commendable. Additionally, his thorough testing of various scenarios for AWI and successful delivery of the Appr Workflow highlight his commitment and attention to detail.
+
+Areas for Growth:
+To further enhance his skills, Ankush should focus on gaining more knowledge in cloud technologies, particularly Azure. Upskilling in architecture would also be beneficial, enabling him to contribute more effectively to the design and scalability of projects.
+
+Action Steps:
+
+	•	Enroll in the CE (Cloud Education) program to build skills in Azure and architectural principles.
+
+Overall:
+Ankush has been performing well and should continue leveraging his strengths while focusing on cloud and architecture skills to expand his impact.
+
+
+
+
+
+
+Aman has demonstrated strong dedication, a proactive attitude, and a commitment to continuous learning. He quickly learned React and successfully delivered the front-end development for the Approval Workflow interface. Aman has shown resilience in tackling complex challenges, such as resolving AAD authentication issues, and his strong work ethic is evident in his willingness to take ownership and work independently. He has even been available on weekends for urgent tasks, highlighting his commitment to timely delivery. Moving forward, Aman is encouraged to deepen his technical expertise, focusing on specific areas as part of a T-shaped learning approach to build a well-rounded skill set.
+
+-----
+
+Strengths:
+
+Strong Work Ethic: Aman consistently demonstrates dedication and reliability, often taking ownership of tasks and working independently with minimal supervision. His willingness to make himself available on weekends for urgent deliveries further underscores his commitment to achieving results.
+
+Quick Learner and Eager to Learn: Aman’s adaptability and enthusiasm for learning new technologies are commendable. He swiftly learned React and delivered the entire front-end for the Approval Workflow interface in a short period.
+
+Persistence and Problem-Solving: Aman has shown resilience and determination, particularly when resolving AAD authentication issues. He tackles challenges with a persistent approach, contributing significantly to the team’s success.
+
+Areas for Improvement:
+
+Deepening Technical Skills: To strengthen his expertise, Aman should focus on gaining in-depth knowledge in specific technical areas.
+
+Structured Learning Approach (T-shaped Learning): Aman could benefit from aligning his learning to the T-shaped model, where he builds broad knowledge across areas while developing deep expertise in selected topics. This structured approach will support his growth in technical proficiency.
+
+
+
 
