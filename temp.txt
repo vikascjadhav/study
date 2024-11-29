@@ -1,11 +1,9 @@
 @echo off
-:: Traverse all subdirectories in the current working directory
-for /d %%d in (*) do (
-    if exist "%%d\.git" (
-        echo Fetching updates for %%d
-        pushd "%%d"
-        git fetch
-        popd
-    )
+:: Traverse all directories recursively
+for /d /r %%d in (.git) do (
+    echo Fetching updates for repository in %%~dpd
+    pushd "%%~dpd"
+    git fetch
+    popd
 )
 pause
