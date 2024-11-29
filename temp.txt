@@ -1,10 +1,8 @@
-#!/bin/bash
-
-# Traverse one level down in the current directory
-for dir in */; do
-  if [ -d "$dir" ]; then
-    echo "Contents of $dir:"
-    ls "$dir"
-    echo
-  fi
-done
+@echo off
+:: Traverse one level down in the current directory
+for /d %%d in (*) do (
+    echo Contents of %%d:
+    dir "%%d"
+    echo.
+)
+pause
