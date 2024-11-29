@@ -1,8 +1,11 @@
 @echo off
-:: Traverse one level down in the current directory
+:: Traverse all subdirectories in the current working directory
 for /d %%d in (*) do (
-    echo Contents of %%d:
-    dir "%%d"
-    echo.
+    if exist "%%d\.git" (
+        echo Fetching updates for %%d
+        pushd "%%d"
+        git fetch
+        popd
+    )
 )
 pause
