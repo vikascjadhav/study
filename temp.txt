@@ -7,3 +7,4 @@ for /d /r %%d in (.git) do (
     popd
 )
 pause
+
