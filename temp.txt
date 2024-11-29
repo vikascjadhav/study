@@ -1,1 +1,10 @@
-has demonstrated excellent availability when needed, prioritizing tasks effectively and ensuring timely completion. Their proactive approach in seeking clarification when in doubt showcases their commitment to accuracy and quality. Great teamwork and reliability
+#!/bin/bash
+
+# Traverse one level down in the current directory
+for dir in */; do
+  if [ -d "$dir" ]; then
+    echo "Contents of $dir:"
+    ls "$dir"
+    echo
+  fi
+done
