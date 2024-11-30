@@ -9,6 +9,9 @@
 - [ ] Code walkthough
 - [ ] Azure AD in depth understanding
 - [ ] Scaling cluster automatically.
+- [ ] Istio understanding in depth virtual service/certificate management
+- [ ] k8s / AKS working in context of cluser interactions kubelet proxy
+- [x] Kubernetes/AKS networking - Cluster IP/ Nodeport IP 
 
 
 ## ✅ Completed
