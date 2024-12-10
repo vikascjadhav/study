@@ -2,9 +2,21 @@ Vaibhav joined the OME pod just a month ago, and in a short span of time, he has
 
 Overall, Vaibhav is performing well and delivering quality work. Moving forward, enhancing his skills in Azure cloud technologies will enable him to take on more complex challenges and broaden his contribution to the team.
 
-
+-----------------------------------------
 Pushkar joined the OME pod just a month ago and has quickly demonstrated his ability to adapt and contribute effectively. He is taking the lead in driving client instruction requirement gathering and facilitating clarifications with both business and IT stakeholders. Additionally, he has taken on Scrum Master responsibilities and has started working on critical documentation, including the System Architecture Design (SAD) and Software Requirement Specification (SRS).
 
 Pushkar is performing well and making meaningful contributions. To further excel, he should continue driving these discussions proactively and deepen his understanding of Products to enhance his impact.
 
+-----------------------------------------
 
+Garima is currently working on Client Instructions UI development and has been single-handedly driving the UI development efforts. She successfully completed the prototype, which received positive feedback from stakeholders.
+
+Garima possesses strong full-stack Java development skills, enabling her to resolve development issues efficiently and effectively.
+
+Overall, Garima is performing well and delivering excellent results. To further enhance her contributions, she should focus on deepening her knowledge of Azure cloud technologies, particularly understanding how AKS infrastructure works and how it can be provisioned.
+
+-----------------------------------------
+
+Rajkumar is currently working on the Client Instructions project and has demonstrated a quick grasp of the requirements. His focus has been on backend development, specifically sourcing client instruction information from various upstream systems using Kafka, REST APIs, and file feeds. He exhibits curiosity and eagerness to learn, which are commendable traits that he should continue to nurture.
+
+Overall, Rajkumar is performing well and delivering strong results. To further enhance his contributions, he should focus on upskilling himself in cloud technologies, which will broaden his expertise and capability to handle advanced development challenges.
