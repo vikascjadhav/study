@@ -1,3 +1,19 @@
-Ankit is currently working on the Client Authentication initiative and has quickly picked up the development activities. He has contributed to backend API development and successfully developed Client Authentication services.
+Certainly! Here's a nomination summary based on the text you provided:
 
-Overall, Ankit has performed well, effectively balancing his professional responsibilities with his family commitments. To further enhance his contributions, he should focus on upskilling himself in cloud technologies, which will strengthen his expertise and broaden his ability to contribute to future initiatives.
+---
+
+**Nomination Summary for Tamkanat**
+
+Tamkanat has made exceptional contributions since joining our team less than a year ago, excelling in her dual role as both a Developer and Scrum Master. Her leadership, technical expertise, and dedication to continuous improvement have greatly impacted our team's success.
+
+In her short tenure, Tamkanat has led the **successful development and release of the core banking adapter**, a high-visibility product that has received positive feedback from stakeholders. Additionally, she spearheaded the **Client Instructions development initiative**, which has been well-received and contributed to enhanced business outcomes. 
+
+Tamkanat is also deeply involved in fostering a collaborative team culture, actively participating in **Hackathons and CSR activities** alongside her colleagues. As a mentor, she has provided invaluable support to new joiners and has guided other members of the pod in their professional growth.
+
+With over **14 years of experience in technology**, she has consistently demonstrated the ability to deliver high-visibility projects in the banking and security domains. Her technical proficiency spans **Java, databases, cloud technologies, software/solution architecture, Kafka, and MQ**, positioning her as an outstanding **full-stack developer**. Tamkanat has consistently gone above and beyond to overcome challenges, meet UBS-specific standards, and collaborate effectively across teams to resolve integration issues quickly.
+
+Her leadership, technical skill, and commitment to team success make her an ideal candidate for this recognition.
+
+--- 
+
+This summary highlights Tamkanat’s key contributions and the value she brings to the team, making her a strong candidate for nomination.
