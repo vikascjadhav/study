@@ -1,19 +1,103 @@
-Certainly! Here's a nomination summary based on the text you provided:
+openapi: 3.0.3
+info:
+  title: Topic API with HAL-FORMS
+  version: 1.0.0
+paths:
+  /topics/{topicId}:
+    get:
+      summary: Get a topic by ID
+      parameters:
+        - name: topicId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A topic resource
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+          links:
+            self:
+              description: Link to this topic
+              operationId: getTopic
+  /:
+    get:
+      summary: Entry point with HAL-FORMS template
+      responses:
+        '200':
+          description: API root with discovery information
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/EntryPoint'
 
----
+components:
+  schemas:
+    Topic:
+      type: object
+      properties:
+        topicId:
+          type: string
+        topicText:
+          type: string
+        _links:
+          type: object
+          properties:
+            self:
+              type: object
+              properties:
+                href:
+                  type: string
+                  example: "/topics/123"
+      required:
+        - topicId
+        - topicText
 
-**Nomination Summary for Tamkanat**
-
-Tamkanat has made exceptional contributions since joining our team less than a year ago, excelling in her dual role as both a Developer and Scrum Master. Her leadership, technical expertise, and dedication to continuous improvement have greatly impacted our team's success.
-
-In her short tenure, Tamkanat has led the **successful development and release of the core banking adapter**, a high-visibility product that has received positive feedback from stakeholders. Additionally, she spearheaded the **Client Instructions development initiative**, which has been well-received and contributed to enhanced business outcomes. 
-
-Tamkanat is also deeply involved in fostering a collaborative team culture, actively participating in **Hackathons and CSR activities** alongside her colleagues. As a mentor, she has provided invaluable support to new joiners and has guided other members of the pod in their professional growth.
-
-With over **14 years of experience in technology**, she has consistently demonstrated the ability to deliver high-visibility projects in the banking and security domains. Her technical proficiency spans **Java, databases, cloud technologies, software/solution architecture, Kafka, and MQ**, positioning her as an outstanding **full-stack developer**. Tamkanat has consistently gone above and beyond to overcome challenges, meet UBS-specific standards, and collaborate effectively across teams to resolve integration issues quickly.
-
-Her leadership, technical skill, and commitment to team success make her an ideal candidate for this recognition.
-
---- 
-
-This summary highlights Tamkanat’s key contributions and the value she brings to the team, making her a strong candidate for nomination.
+    EntryPoint:
+      type: object
+      properties:
+        _links:
+          type: object
+          properties:
+            topics:
+              type: object
+              properties:
+                href:
+                  type: string
+                  example: "/topics/{topicId}"
+                templated: true
+        _templates:
+          type: object
+          properties:
+            getTopic:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Get Topic"
+                method:
+                  type: string
+                  example: "GET"
+                contentType:
+                  type: string
+                  example: "application/json"
+                properties:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "topicId"
+                      required:
+                        type: boolean
+                        example: true
+                target:
+                  type: string
+                  example: "/topics/{topicId}"
