@@ -1,2 +1,70 @@
-java -Xmx2g -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/path/to/heapdump.hprof -jar yourapp.jar
-java -Xlog:gc*,gc+heap,gc+verbose -jar yourapp.jar
+Title:
+"Wealth Domain Knowledge Accelerator: Empowering New Engineers with Institutional Knowledge, Common Challenges, and Code Solutions"
+
+Description:
+The goal of this initiative is to create a comprehensive knowledge repository and onboarding toolkit tailored for new engineers joining UBS, specifically focusing on the Wealth Management domain. This resource will provide institutional knowledge, highlight typical problems and challenges faced in the domain, and offer pre-built code solutions for common issues. Additionally, it will include detailed documentation on front-to-back system flows, leveraging sources like ISAC, AppDir, Azure cost data, and other relevant systems.
+
+The toolkit will serve as a one-stop resource to help new engineers quickly understand the Wealth domain, reduce their learning curve, and enable them to contribute effectively from day one. It will also foster collaboration and knowledge sharing across teams.
+
+Key Components:
+Institutional Knowledge:
+
+Overview of the Wealth Management domain at UBS.
+
+Key terminologies, processes, and workflows.
+
+Regulatory and compliance considerations.
+
+Common Problems & Challenges:
+
+A curated list of typical issues faced by engineers in the Wealth domain (e.g., data inconsistencies, integration challenges, performance bottlenecks).
+
+Real-world examples and case studies.
+
+Code Solutions for Common Problems:
+
+Pre-built code snippets, templates, and reusable components for solving frequent challenges.
+
+Best practices for coding, debugging, and testing in the Wealth domain.
+
+Front-to-Back System Flows:
+
+Detailed documentation on how systems interact across the Wealth domain (e.g., front-end to back-end flows).
+
+Diagrams, flowcharts, and explanations of key integration points.
+
+Resource Links:
+
+Access to ISAC, AppDir, Azure cost data, and other critical systems.
+
+Links to relevant documentation, training materials, and internal tools.
+
+Onboarding Playbook:
+
+Step-by-step guide for new engineers to navigate the Wealth domain.
+
+Tips for effective collaboration with stakeholders (e.g., business analysts, product owners).
+
+Expected Results:
+Faster Onboarding: New engineers will gain domain knowledge and practical skills more quickly, reducing their time-to-productivity.
+
+Improved Efficiency: Pre-built code solutions and documentation will save time and effort for both new and existing engineers.
+
+Enhanced Collaboration: A shared knowledge base will foster better communication and collaboration across teams.
+
+Reduced Errors: Clear documentation and best practices will minimize common mistakes and improve code quality.
+
+Scalability: The toolkit can be expanded to cover other domains or updated as new challenges and solutions emerge.
+
+Dependencies:
+Stakeholder Buy-In: Support from Wealth domain experts, engineering leads, and senior management to contribute knowledge and resources.
+
+Content Creation: Collaboration with domain experts to curate institutional knowledge, identify common problems, and document system flows.
+
+Technical Resources: Access to systems like ISAC, AppDir, and Azure for data and documentation.
+
+Tooling: A platform to host the knowledge repository (e.g., Confluence, SharePoint, or an internal wiki).
+
+Maintenance Plan: A process for regularly updating the toolkit to reflect changes in the domain, systems, or best practices.
+
+This initiative will not only accelerate the onboarding process for new engineers but also strengthen the overall engineering culture by promoting knowledge sharing and collaboration. It aligns with UBS's commitment to innovation and operational excellence in the Wealth Management domain.
