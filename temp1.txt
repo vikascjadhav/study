@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PostMessage Receiver</title>
+</head>
+<body>
+  <h1>Message Receiver</h1>
+  <div id="log"></div>
+
+  <script>
+    // Function to safely log messages to the page
+    function logMessage(message) {
+      const logDiv = document.getElementById('log');
+      const para = document.createElement('p');
+      para.textContent = message;
+      logDiv.appendChild(para);
+    }
+
+    // Message event listener
+    window.addEventListener("message", (event) => {
+      // SECURITY: Check the origin of the incoming message
+      const trustedOrigin = "https://trusted.example.com"; // Replace with the actual trusted origin
+      if (event.origin !== trustedOrigin) {
+        console.warn("Received message from untrusted origin:", event.origin);
+        return; // Ignore messages from untrusted origins
+      }
+
+      // Process the incoming data
+      logMessage("Received message: " + JSON.stringify(event.data));
+
+      // Optionally, you can reply to the sender
+      const reply = { status: "Received", originalData: event.data };
+      event.source.postMessage(reply, event.origin);
+    }, false);
+  </script>
+</body>
+</html>
