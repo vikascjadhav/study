@@ -2,37 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>PostMessage Receiver</title>
+  <title>PostMessage Sender</title>
+  <style>
+    /* Simple styling */
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    iframe {
+      display: block;
+      margin-top: 20px;
+      border: 1px solid #ccc;
+    }
+  </style>
 </head>
 <body>
-  <h1>Message Receiver</h1>
-  <div id="log"></div>
+  <h1>Sender Page</h1>
+  <button id="sendMessage">Send Message to Receiver</button>
+
+  <!-- The iframe that loads the receiver page -->
+  <iframe id="receiverIframe" src="receiver.html" width="600" height="400"></iframe>
 
   <script>
-    // Function to safely log messages to the page
-    function logMessage(message) {
-      const logDiv = document.getElementById('log');
-      const para = document.createElement('p');
-      para.textContent = message;
-      logDiv.appendChild(para);
-    }
+    document.getElementById('sendMessage').addEventListener('click', function() {
+      // Reference to the receiver iframe's window object
+      const receiverWindow = document.getElementById('receiverIframe').contentWindow;
+      
+      // Create the message data object
+      const message = {
+        action: 'hello',
+        data: 'Hello from the Sender Page!'
+      };
 
-    // Message event listener
-    window.addEventListener("message", (event) => {
-      // SECURITY: Check the origin of the incoming message
-      const trustedOrigin = "https://trusted.example.com"; // Replace with the actual trusted origin
-      if (event.origin !== trustedOrigin) {
-        console.warn("Received message from untrusted origin:", event.origin);
-        return; // Ignore messages from untrusted origins
-      }
-
-      // Process the incoming data
-      logMessage("Received message: " + JSON.stringify(event.data));
-
-      // Optionally, you can reply to the sender
-      const reply = { status: "Received", originalData: event.data };
-      event.source.postMessage(reply, event.origin);
-    }, false);
+      // Define the target origin. If testing locally and both pages are on the same origin,
+      // you can use window.location.origin. Otherwise, replace it with the receiver's domain.
+      const targetOrigin = window.location.origin;
+      
+      // Post the message to the receiver window
+      receiverWindow.postMessage(message, targetOrigin);
+      
+      console.log('Message sent:', message);
+    });
   </script>
 </body>
 </html>
