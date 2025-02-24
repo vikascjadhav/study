@@ -1,30 +1,42 @@
-### **Objective Summary:**  
-Deliver a **modern Contact Management Solution** for Taiwan business by **June 2025**, replacing the legacy **mainframe system** with an **OpenStack-based architecture**. The solution will include **two React-based MOAP SPA frontend modules**—**Contact Trade Cut GUI** and **Contact Dashboard**—and a backend providing **contact creation, enquiry, modification, and reporting services**. It will be **integrated with Order Manager, CRM, HRI, and WHS systems**, with all APIs **onboarded to Apigee API Gateway** for security and scalability.  
+Here’s the updated version incorporating **observability principles aligned with WMPC CTO guidelines**:  
 
-### **Objective Details:**  
-The Contact Management Solution aims to provide a **scalable, cloud-native** system to enhance **client relationship management**. By moving away from a **legacy mainframe system**, the new platform will offer **greater flexibility, cost efficiency, and better integration capabilities**.  
+---
 
-- **Frontend Development:**  
-  - Build **Contact Trade Cut GUI** and **Contact Dashboard** using **React with MOAP SPA architecture** for a modern and responsive user experience.  
+### **Objective: Elevate Impact & Efficiency of Order Manager Enabler (OME) Application**  
 
-- **Backend Services:**  
-  - Develop API-driven modules to support **contact creation, enquiry, modification, and reporting services**.  
+#### **Objective Description:**  
+- **Enhance OME applications** to support **multi-entity/location design**, ensuring scalability.  
+- **Maintain high code quality** by reducing **technical debt** and improving **unit test coverage**.  
+- **Contribute to system architecture** through **System Architecture Document (SAD) updates** and **MER implementation**.  
+- **Optimize system efficiency** by implementing **automated pipelines for Azure automation**.  
+- **Ensure high-quality codebase** through **peer code reviews and adherence to clean coding guidelines**.  
+- **Improve application performance** by reducing processing latency and optimizing system resource utilization.  
+- **Develop observability principles** aligned with **WMPC CTO guidelines** to enhance monitoring, logging, and alerting for OME applications.  
+- **Provide L3 production support** to ensure platform stability and issue resolution.  
 
-- **System Integrations:**  
-  - Ensure **seamless data flow** and process automation by integrating with **Order Manager, CRM, HRI (Human Resource Information), and WHS (Warehouse System)** to support end-to-end business operations.  
+#### **Outcomes / Metrics:**  
+- **Scalability:** OME applications should be **extendable to multiple entities/locations** with **minimal changes**.  
+- **Code Quality & Coverage:**  
+  - **Fix all CRITICAL/MAJOR defects** from **Sonar Analysis**.  
+  - Maintain **80% unit test coverage** for all OME components.  
+- **Architecture & Compliance:**  
+  - **Secure CTO approval** for **SAD** before production go-live.  
+  - **Implement all MER requirements** before release.  
+- **Operational Efficiency & Cost Optimization:**  
+  - **Reduce cloud costs by 10%** through automation by **December 2024**.  
+  - **Improve deployment speed** via **automated pipelines**.  
+- **Code Review & Best Practices:**  
+  - Complete **assigned code reviews** as per **clean coding standards**.  
+- **Application Performance:**  
+  - **Reduce processing latency** by optimizing database queries, API response times, and system workflows.  
+  - Ensure **high system availability and reliability** with proactive monitoring and tuning.  
+- **Observability & Monitoring:**  
+  - Implement **observability best practices** aligned with **WMPC CTO guidelines**.  
+  - Enhance **logging, monitoring, and alerting mechanisms** for better issue detection and resolution.  
+  - Utilize **distributed tracing and metrics** to improve troubleshooting and system health visibility.  
+- **Platform Stability & Support:**  
+  - Maintain **operational stability** through **proactive monitoring and L3 support**.  
 
-- **API Management & Security:**  
-  - Onboard all **Contact Management APIs** to **Apigee API Gateway** to enable **secure, scalable, and monitored** API access.  
+---
 
-- **Deployment & Timeline:**  
-  - Implement the **MVP version** by **June 2025**, ensuring core functionalities are delivered for initial use.  
-
-### **Expected Outcome:**  
-- **Enhanced Client Relationship Management**: Improved contact tracking, enquiry handling, and reporting capabilities.  
-- **Modern, Scalable, and Cloud-Based Solution**: Eliminates mainframe dependency, reducing operational costs and increasing system agility.  
-- **Improved User Experience**: React-based frontend provides an intuitive, efficient interface for business users.  
-- **Seamless Business Process Integration**: Direct connectivity with **Order Manager, CRM, HRI, and WHS** ensures a **streamlined workflow** and better operational efficiency.  
-- **Robust API Management**: Apigee API Gateway enhances **security, performance monitoring, and scalability**.  
-- **On-Time MVP Delivery**: A **functional, production-ready** Contact Management system delivered by **June 2025**.  
-
-Let me know if you'd like any further refinements!
+This version includes **observability as a key principle**, ensuring system transparency, proactive monitoring, and efficient debugging. Let me know if you need any refinements! 🚀
