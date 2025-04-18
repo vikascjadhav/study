@@ -1,42 +1,177 @@
-Here’s the updated version incorporating **observability principles aligned with WMPC CTO guidelines**:  
+// App.tsx or StudentTable.tsx
+import React, { useState } from 'react';
+import StudentForm from './StudentForm';
 
----
+const dummyStudent = {
+  id: '123',
+  name: 'John Doe',
+  type: 'internal',
+  age: '21',
+  email: 'john@example.com',
+};
 
-### **Objective: Elevate Impact & Efficiency of Order Manager Enabler (OME) Application**  
+export default function App() {
+  const [selectedStudent, setSelectedStudent] = useState<typeof dummyStudent | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
 
-#### **Objective Description:**  
-- **Enhance OME applications** to support **multi-entity/location design**, ensuring scalability.  
-- **Maintain high code quality** by reducing **technical debt** and improving **unit test coverage**.  
-- **Contribute to system architecture** through **System Architecture Document (SAD) updates** and **MER implementation**.  
-- **Optimize system efficiency** by implementing **automated pipelines for Azure automation**.  
-- **Ensure high-quality codebase** through **peer code reviews and adherence to clean coding guidelines**.  
-- **Improve application performance** by reducing processing latency and optimizing system resource utilization.  
-- **Develop observability principles** aligned with **WMPC CTO guidelines** to enhance monitoring, logging, and alerting for OME applications.  
-- **Provide L3 production support** to ensure platform stability and issue resolution.  
+  const openStudent = (student: typeof dummyStudent) => {
+    setSelectedStudent(student);
+    setIsCreating(false);
+  };
 
-#### **Outcomes / Metrics:**  
-- **Scalability:** OME applications should be **extendable to multiple entities/locations** with **minimal changes**.  
-- **Code Quality & Coverage:**  
-  - **Fix all CRITICAL/MAJOR defects** from **Sonar Analysis**.  
-  - Maintain **80% unit test coverage** for all OME components.  
-- **Architecture & Compliance:**  
-  - **Secure CTO approval** for **SAD** before production go-live.  
-  - **Implement all MER requirements** before release.  
-- **Operational Efficiency & Cost Optimization:**  
-  - **Reduce cloud costs by 10%** through automation by **December 2024**.  
-  - **Improve deployment speed** via **automated pipelines**.  
-- **Code Review & Best Practices:**  
-  - Complete **assigned code reviews** as per **clean coding standards**.  
-- **Application Performance:**  
-  - **Reduce processing latency** by optimizing database queries, API response times, and system workflows.  
-  - Ensure **high system availability and reliability** with proactive monitoring and tuning.  
-- **Observability & Monitoring:**  
-  - Implement **observability best practices** aligned with **WMPC CTO guidelines**.  
-  - Enhance **logging, monitoring, and alerting mechanisms** for better issue detection and resolution.  
-  - Utilize **distributed tracing and metrics** to improve troubleshooting and system health visibility.  
-- **Platform Stability & Support:**  
-  - Maintain **operational stability** through **proactive monitoring and L3 support**.  
+  const handleSave = (studentData: typeof dummyStudent) => {
+    console.log('Saved student:', studentData);
 
----
+    if (isCreating) {
+      // Add to student list logic here if you’re managing a list
+      console.log('Created new student');
+    } else {
+      // Update existing student logic
+      console.log('Updated student');
+    }
 
-This version includes **observability as a key principle**, ensuring system transparency, proactive monitoring, and efficient debugging. Let me know if you need any refinements! 🚀
+    setSelectedStudent(studentData);
+    setIsCreating(false);
+  };
+
+  return (
+    <div>
+      <h2>Student Table</h2>
+
+      {/* Example open button */}
+      <button onClick={() => openStudent(dummyStudent)}>Open Student</button>
+
+      {/* Create Student Button */}
+      <button onClick={() => {
+        setSelectedStudent(null);
+        setIsCreating(true);
+      }}>
+        Create Student
+      </button>
+
+      {/* Render Form */}
+      {(selectedStudent || isCreating) && (
+        <StudentForm
+          mode={isCreating ? 'create' : 'view'}
+          studentData={selectedStudent || undefined}
+          onSave={handleSave}
+        />
+      )}
+    </div>
+  );
+}
+
+
+
+
+
+// StudentForm.tsx
+
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+
+type StudentType = 'internal' | 'external';
+
+interface Student {
+  id: string;
+  name: string;
+  type: StudentType;
+  age: string;
+  email: string;
+}
+
+type Mode = 'create' | 'view' | 'edit';
+
+interface Props {
+  mode: Mode;
+  studentData?: Student;
+  onSave: (data: Student) => void;
+}
+
+const StudentForm: React.FC<Props> = ({ mode: initialMode, studentData, onSave }) => {
+  const [mode, setMode] = useState<Mode>(initialMode);
+  const { register, handleSubmit, watch, formState: { errors }, reset } = useForm<Student>({
+    defaultValues: studentData || {
+      id: '',
+      name: '',
+      type: 'internal',
+      age: '',
+      email: '',
+    }
+  });
+
+  const currentType = watch('type');
+
+  const isDisabled = (field: keyof Student): boolean => {
+    if (mode === 'create') return false;
+    if (mode === 'view') return true;
+    if (mode === 'edit') {
+      if (currentType === 'external') {
+        return field !== 'name'; // Only name is editable
+      }
+      return field === 'id'; // Internal: all but ID editable
+    }
+    return false;
+  };
+
+  const onSubmit = (data: Student) => {
+    onSave(data);
+    if (mode === 'edit') {
+      setMode('view');
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div>
+        <label>ID:</label>
+        <input {...register('id', { required: true })} disabled={isDisabled('id')} />
+        {errors.id && <span>ID is required</span>}
+      </div>
+
+      <div>
+        <label>Name:</label>
+        <input {...register('name', { required: true })} disabled={isDisabled('name')} />
+        {errors.name && <span>Name is required</span>}
+      </div>
+
+      <div>
+        <label>Type:</label>
+        <select {...register('type')} disabled={isDisabled('type')}>
+          <option value="internal">Internal</option>
+          <option value="external">External</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Age:</label>
+        <input type="number" {...register('age')} disabled={isDisabled('age')} />
+      </div>
+
+      <div>
+        <label>Email:</label>
+        <input type="email" {...register('email')} disabled={isDisabled('email')} />
+      </div>
+
+      <div style={{ marginTop: '1em' }}>
+        {mode === 'view' && (
+          <button type="button" onClick={() => setMode('edit')}>Edit</button>
+        )}
+        {mode !== 'view' && (
+          <button type="submit">Save</button>
+        )}
+      </div>
+    </form>
+  );
+};
+
+export default StudentForm;
+
+
+
+
+
+
+
+
+
