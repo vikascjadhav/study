@@ -1,48 +1,286 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>PostMessage Sender</title>
-  <style>
-    /* Simple styling */
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
+
+with callback from parent
+
+
+
+
+import React, { useState } from 'react';
+import StudentForm from './StudentForm';
+
+type StudentType = 'internal' | 'external' | 'foreigner';
+
+interface Student {
+  id: string;
+  name: string;
+  type: StudentType;
+  age: string;
+  email: string;
+}
+
+type Mode = 'create' | 'view' | 'edit';
+
+const App: React.FC = () => {
+  const [students, setStudents] = useState<Student[]>([
+    {
+      id: '1',
+      name: 'Alice Johnson',
+      type: 'internal',
+      age: '20',
+      email: 'alice@example.com',
+    },
+    {
+      id: '2',
+      name: 'Bob Smith',
+      type: 'external',
+      age: '22',
+      email: 'bob@example.com',
+    },
+    {
+      id: '3',
+      name: 'Lina Zhou',
+      type: 'foreigner',
+      age: '24',
+      email: '',
+    },
+  ]);
+
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [formMode, setFormMode] = useState<Mode>('view');
+
+  const handleViewStudent = (student: Student) => {
+    setSelectedStudent(student);
+    setFormMode('view');
+  };
+
+  const handleCreateStudent = () => {
+    setSelectedStudent(null);
+    setFormMode('create');
+  };
+
+  const handleSave = (student: Student) => {
+    if (formMode === 'create') {
+      setStudents(prev => [...prev, student]);
+    } else {
+      setStudents(prev => prev.map(s => (s.id === student.id ? student : s)));
     }
-    iframe {
-      display: block;
-      margin-top: 20px;
-      border: 1px solid #ccc;
+    setSelectedStudent(student);
+    setFormMode('view');
+  };
+
+  return (
+    <div style={{ padding: 20 }}>
+      <h2>Student Table</h2>
+      <table border={1} cellPadding={5} cellSpacing={0} style={{ width: '100%', marginBottom: 20 }}>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Age</th>
+            <th>Email</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {students.map((student) => (
+            <tr key={student.id}>
+              <td>{student.id}</td>
+              <td>{student.name}</td>
+              <td>{student.type}</td>
+              <td>{student.age}</td>
+              <td>{student.email}</td>
+              <td>
+                <button onClick={() => handleViewStudent(student)}>View</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <button onClick={handleCreateStudent}>Create Student</button>
+
+      {(formMode === 'create' || selectedStudent) && (
+        <StudentForm
+          mode={formMode}
+          studentData={selectedStudent || undefined}
+          onSave={handleSave}
+          onModeChange={(newMode) => setFormMode(newMode)}
+        />
+      )}
+    </div>
+  );
+};
+
+export default App;
+
+
+
+
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+
+type StudentType = 'internal' | 'external' | 'foreigner';
+
+interface Student {
+  id: string;
+  name: string;
+  type: StudentType;
+  age: string;
+  email: string;
+}
+
+type Mode = 'create' | 'view' | 'edit';
+
+interface Props {
+  mode: Mode;
+  studentData?: Student;
+  onSave: (data: Student) => void;
+  onModeChange: (newMode: Mode) => void;
+}
+
+const StudentForm: React.FC<Props> = ({ mode, studentData, onSave, onModeChange }) => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<Student>({
+    defaultValues: studentData || {
+      id: '',
+      name: '',
+      type: 'internal',
+      age: '',
+      email: '',
     }
-  </style>
-</head>
-<body>
-  <h1>Sender Page</h1>
-  <button id="sendMessage">Send Message to Receiver</button>
+  });
 
-  <!-- The iframe that loads the receiver page -->
-  <iframe id="receiverIframe" src="receiver.html" width="600" height="400"></iframe>
+  const currentType = watch('type');
 
-  <script>
-    document.getElementById('sendMessage').addEventListener('click', function() {
-      // Reference to the receiver iframe's window object
-      const receiverWindow = document.getElementById('receiverIframe').contentWindow;
-      
-      // Create the message data object
-      const message = {
-        action: 'hello',
-        data: 'Hello from the Sender Page!'
-      };
+  useEffect(() => {
+    if (studentData) {
+      reset(studentData);
+    } else {
+      reset({
+        id: '',
+        name: '',
+        type: 'internal',
+        age: '',
+        email: '',
+      });
+    }
+  }, [studentData, reset]);
 
-      // Define the target origin. If testing locally and both pages are on the same origin,
-      // you can use window.location.origin. Otherwise, replace it with the receiver's domain.
-      const targetOrigin = window.location.origin;
-      
-      // Post the message to the receiver window
-      receiverWindow.postMessage(message, targetOrigin);
-      
-      console.log('Message sent:', message);
-    });
-  </script>
-</body>
-</html>
+  const isDisabled = (field: keyof Student): boolean => {
+    if (mode === 'create') return false;
+    if (mode === 'view') return true;
+    if (mode === 'edit') {
+      if (currentType === 'external') return field !== 'name';
+      if (currentType === 'foreigner') return field !== 'name' && field !== 'age';
+      return field === 'id';
+    }
+    return false;
+  };
+
+  const isVisible = (field: keyof Student): boolean => {
+    if (currentType === 'foreigner') {
+      return field === 'name' || field === 'age';
+    }
+    return true;
+  };
+
+  const onSubmit = (data: Student) => {
+    onSave(data);
+    onModeChange('view');
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} style={{ border: '1px solid #ccc', padding: 20, marginTop: 20 }}>
+      <h3>{mode === 'create' ? 'Create Student' : mode === 'edit' ? 'Edit Student' : 'View Student'}</h3>
+
+      {isVisible('id') && (
+        <div>
+          <label>ID:</label>
+          <input
+            {...register('id', {
+              required: mode === 'create' ? 'ID is required' : false
+            })}
+            disabled={isDisabled('id')}
+          />
+          {errors.id && <span style={{ color: 'red' }}>{errors.id.message}</span>}
+        </div>
+      )}
+
+      {isVisible('name') && (
+        <div>
+          <label>Name:</label>
+          <input
+            {...register('name', {
+              required: mode !== 'view' ? 'Name is required' : false
+            })}
+            disabled={isDisabled('name')}
+          />
+          {errors.name && <span style={{ color: 'red' }}>{errors.name.message}</span>}
+        </div>
+      )}
+
+      {isVisible('type') && (
+        <div>
+          <label>Type:</label>
+          <select
+            {...register('type', {
+              required: mode !== 'view' ? 'Type is required' : false
+            })}
+            disabled={isDisabled('type')}
+          >
+            <option value="internal">Internal</option>
+            <option value="external">External</option>
+            <option value="foreigner">Foreigner</option>
+          </select>
+          {errors.type && <span style={{ color: 'red' }}>{errors.type.message}</span>}
+        </div>
+      )}
+
+      {isVisible('age') && (
+        <div>
+          <label>Age:</label>
+          <input
+            type="number"
+            {...register('age', {
+              required: mode !== 'view' && (currentType === 'internal' || currentType === 'foreigner') ? 'Age is required' : false
+            })}
+            disabled={isDisabled('age')}
+          />
+          {errors.age && <span style={{ color: 'red' }}>{errors.age.message}</span>}
+        </div>
+      )}
+
+      {isVisible('email') && (
+        <div>
+          <label>Email:</label>
+          <input
+            type="email"
+            {...register('email', {
+              required: mode !== 'view' && currentType === 'internal' ? 'Email is required' : false
+            })}
+            disabled={isDisabled('email')}
+          />
+          {errors.email && <span style={{ color: 'red' }}>{errors.email.message}</span>}
+        </div>
+      )}
+
+      <div style={{ marginTop: '1em' }}>
+        {mode === 'view' && (
+          <button type="button" onClick={() => onModeChange('edit')}>
+            Edit
+          </button>
+        )}
+        {mode !== 'view' && (
+          <button type="submit">Save</button>
+        )}
+      </div>
+    </form>
+  );
+};
+
+export default StudentForm;
