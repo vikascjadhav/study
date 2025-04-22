@@ -1,11 +1,55 @@
-@echo off
-setlocal
+import React, { useReducer } from 'react';
 
-:: Tab 1
-start "Tab1" cmd /k "set tab=1 && echo This is tab %tab% && pause"
+// Initial state
+const initialState = {
+  count: 0,
+  status: 'idle',
+};
 
-:: Tab 2
-start "Tab2" cmd /k "set tab=2 && echo This is tab %tab% && pause"
+// Reducer function
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'INCREMENT':
+      return { ...state, count: state.count + 1 };
+    case 'DECREMENT':
+      return { ...state, count: state.count - 1 };
+    case 'SET_STATUS':
+      return { ...state, status: action.payload };
+    default:
+      return state;
+  }
+};
 
-:: Tab 3
-start "Tab3" cmd /k "set tab=3 && echo This is tab %tab% && pause"
+// Custom logging middleware
+const loggingMiddleware = (dispatch) => (action) => {
+  // Log state before action
+  console.log('State before action:', action.type, action.payload);
+
+  // Dispatch the action
+  const result = dispatch(action);
+
+  // Log state after action
+  console.log('State after action:', action.type, result);
+
+  return result;
+};
+
+const MyComponent = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  // Wrap dispatch with logging middleware
+  const logDispatch = loggingMiddleware(dispatch);
+
+  return (
+    <div>
+      <h1>Current Count: {state.count}</h1>
+      <h2>Status: {state.status}</h2>
+      <button onClick={() => logDispatch({ type: 'INCREMENT' })}>Increment</button>
+      <button onClick={() => logDispatch({ type: 'DECREMENT' })}>Decrement</button>
+      <button onClick={() => logDispatch({ type: 'SET_STATUS', payload: 'active' })}>Set Active Status</button>
+      <button onClick={() => logDispatch({ type: 'SET_STATUS', payload: 'inactive' })}>Set Inactive Status</button>
+    </div>
+  );
+};
+
+export default MyComponent;
