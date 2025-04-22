@@ -1,0 +1,11 @@
+@echo off
+setlocal
+
+:: Tab 1
+start "Tab1" cmd /k "set tab=1 && echo This is tab %tab% && pause"
+
+:: Tab 2
+start "Tab2" cmd /k "set tab=2 && echo This is tab %tab% && pause"
+
+:: Tab 3
+start "Tab3" cmd /k "set tab=3 && echo This is tab %tab% && pause"
