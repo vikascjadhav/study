@@ -1,26 +1,20 @@
-// useReducerWithLogger.js
-import { useReducer, useRef, useEffect } from 'react';
+// loggerMiddleware.js
 
-export const useReducerWithLogger = (reducer, initialState) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const prevState = useRef(initialState);
-
-  const dispatchWithLogger = (action) => {
+export const withLogger = (reducer) => {
+  return (state, action) => {
     if (process.env.NODE_ENV !== 'production') {
-      console.groupCollapsed(`%c Action: ${action.type}`, 'color: #03A9F4; font-weight: bold');
-      console.log('%cPrev State:', 'color: #9E9E9E', prevState.current);
-      console.log('%cAction:', 'color: #03A9F4', action);
+      console.groupCollapsed(`%cAction: ${action.type}`, 'color: #03A9F4; font-weight: bold');
+      console.log('%cPrev State:', 'color: gray', state);
+      console.log('%cAction:', 'color: blue', action);
     }
 
-    dispatch(action);
+    const newState = reducer(state, action);
 
     if (process.env.NODE_ENV !== 'production') {
-      console.log('%cNext State:', 'color: #4CAF50', reducer(prevState.current, action));
+      console.log('%cNext State:', 'color: green', newState);
       console.groupEnd();
     }
 
-    prevState.current = reducer(prevState.current, action);
+    return newState;
   };
-
-  return [state, dispatchWithLogger];
 };
