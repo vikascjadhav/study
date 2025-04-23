@@ -1,55 +1,26 @@
-import React, { useReducer } from 'react';
+// useReducerWithLogger.js
+import { useReducer, useRef, useEffect } from 'react';
 
-// Initial state
-const initialState = {
-  count: 0,
-  status: 'idle',
-};
-
-// Reducer function
-const reducer = (state, action) => {
-  switch (action.type) {
-    case 'INCREMENT':
-      return { ...state, count: state.count + 1 };
-    case 'DECREMENT':
-      return { ...state, count: state.count - 1 };
-    case 'SET_STATUS':
-      return { ...state, status: action.payload };
-    default:
-      return state;
-  }
-};
-
-// Custom logging middleware
-const loggingMiddleware = (dispatch) => (action) => {
-  // Log state before action
-  console.log('State before action:', action.type, action.payload);
-
-  // Dispatch the action
-  const result = dispatch(action);
-
-  // Log state after action
-  console.log('State after action:', action.type, result);
-
-  return result;
-};
-
-const MyComponent = () => {
+export const useReducerWithLogger = (reducer, initialState) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const prevState = useRef(initialState);
 
-  // Wrap dispatch with logging middleware
-  const logDispatch = loggingMiddleware(dispatch);
+  const dispatchWithLogger = (action) => {
+    if (process.env.NODE_ENV !== 'production') {
+      console.groupCollapsed(`%c Action: ${action.type}`, 'color: #03A9F4; font-weight: bold');
+      console.log('%cPrev State:', 'color: #9E9E9E', prevState.current);
+      console.log('%cAction:', 'color: #03A9F4', action);
+    }
 
-  return (
-    <div>
-      <h1>Current Count: {state.count}</h1>
-      <h2>Status: {state.status}</h2>
-      <button onClick={() => logDispatch({ type: 'INCREMENT' })}>Increment</button>
-      <button onClick={() => logDispatch({ type: 'DECREMENT' })}>Decrement</button>
-      <button onClick={() => logDispatch({ type: 'SET_STATUS', payload: 'active' })}>Set Active Status</button>
-      <button onClick={() => logDispatch({ type: 'SET_STATUS', payload: 'inactive' })}>Set Inactive Status</button>
-    </div>
-  );
+    dispatch(action);
+
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('%cNext State:', 'color: #4CAF50', reducer(prevState.current, action));
+      console.groupEnd();
+    }
+
+    prevState.current = reducer(prevState.current, action);
+  };
+
+  return [state, dispatchWithLogger];
 };
-
-export default MyComponent;
