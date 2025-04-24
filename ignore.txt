@@ -1,6 +1,6 @@
-import { diff } from 'deep-diff';
+import { diff, Diff } from 'deep-diff';
 
-export const withLogger = (reducer) => {
+export const withLogger = <T>(reducer: React.Reducer<T, any>): React.Reducer<T, any> => {
   return (state, action) => {
     const nextState = reducer(state, action);
 
@@ -10,7 +10,7 @@ export const withLogger = (reducer) => {
       console.log('%cAction:', 'color: blue', action);
       console.log('%cNext State:', 'color: green', nextState);
 
-      const differences = diff(state, nextState);
+      const differences = diff(state, nextState) as Diff<T, T>[];
 
       if (!differences || differences.length === 0) {
         console.log('%cNo deep state changes detected.', 'color: orange');
@@ -18,49 +18,55 @@ export const withLogger = (reducer) => {
         console.log('%cDeep State Changes:', 'color: purple');
 
         differences.forEach((change) => {
-          const path = Array.isArray(change.path)
-            ? change.path.join('.')
-            : '(unknown)';
+          const path = Array.isArray(change.path) ? change.path.join('.') : '(unknown)';
 
           switch (change.kind) {
-            case 'E':
+            case 'E': {
+              // kind E has lhs and rhs
               console.log(
                 `%c[Changed] %c${path}`,
                 'color: red; font-weight: bold',
                 'color: black',
                 'from',
-                change?.lhs ?? '(undefined)',
+                change.lhs,
                 'to',
-                change?.rhs ?? '(undefined)'
+                change.rhs
               );
               break;
-            case 'N':
+            }
+            case 'N': {
               console.log(
                 `%c[Added] %c${path}`,
                 'color: green; font-weight: bold',
                 'color: black',
                 'value:',
-                change?.rhs ?? '(undefined)'
+                change.rhs
               );
               break;
-            case 'D':
+            }
+            case 'D': {
               console.log(
                 `%c[Deleted] %c${path}`,
                 'color: gray; font-weight: bold',
                 'color: black',
                 'was:',
-                change?.lhs ?? '(undefined)'
+                change.lhs
               );
               break;
-            case 'A':
+            }
+            case 'A': {
+              // kind A has an item and index
+              const item = change.item;
+              const index = change.index;
               console.log(
-                `%c[Array Change] %c${path}[${change.index}]`,
+                `%c[Array Change] %c${path}[${index}]`,
                 'color: blue; font-weight: bold',
                 'color: black',
                 'item:',
-                change?.item ?? '(undefined)'
+                item
               );
               break;
+            }
             default:
               console.log('%c[Other]', 'color: #999', change);
           }
