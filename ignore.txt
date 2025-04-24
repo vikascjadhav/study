@@ -18,3 +18,31 @@ export const withLogger = (reducer) => {
     return newState;
   };
 };
+
+
+// deepDiff.js
+
+export const deepDiff = (prev, next, path = '') => {
+  const changes = [];
+
+  const allKeys = new Set([...Object.keys(prev || {}), ...Object.keys(next || {})]);
+
+  allKeys.forEach((key) => {
+    const fullPath = path ? `${path}.${key}` : key;
+    const prevVal = prev?.[key];
+    const nextVal = next?.[key];
+
+    const bothObjects = isObject(prevVal) && isObject(nextVal);
+
+    if (bothObjects) {
+      changes.push(...deepDiff(prevVal, nextVal, fullPath));
+    } else if (prevVal !== nextVal) {
+      changes.push({ path: fullPath, from: prevVal, to: nextVal });
+    }
+  });
+
+  return changes;
+};
+
+const isObject = (val) => typeof val === 'object' && val !== null && !Array.isArray(val);
+
