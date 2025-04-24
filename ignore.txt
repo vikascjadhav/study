@@ -23,42 +23,42 @@ export const withLogger = (reducer) => {
             : '(unknown)';
 
           switch (change.kind) {
-            case 'E': // Edited
+            case 'E':
               console.log(
                 `%c[Changed] %c${path}`,
                 'color: red; font-weight: bold',
                 'color: black',
                 'from',
-                'lhs' in change ? change.lhs : '(undefined)',
+                change?.lhs ?? '(undefined)',
                 'to',
-                'rhs' in change ? change.rhs : '(undefined)'
+                change?.rhs ?? '(undefined)'
               );
               break;
-            case 'N': // New
+            case 'N':
               console.log(
                 `%c[Added] %c${path}`,
                 'color: green; font-weight: bold',
                 'color: black',
                 'value:',
-                'rhs' in change ? change.rhs : '(undefined)'
+                change?.rhs ?? '(undefined)'
               );
               break;
-            case 'D': // Deleted
+            case 'D':
               console.log(
                 `%c[Deleted] %c${path}`,
                 'color: gray; font-weight: bold',
                 'color: black',
                 'was:',
-                'lhs' in change ? change.lhs : '(undefined)'
+                change?.lhs ?? '(undefined)'
               );
               break;
-            case 'A': // Array change
+            case 'A':
               console.log(
                 `%c[Array Change] %c${path}[${change.index}]`,
                 'color: blue; font-weight: bold',
                 'color: black',
                 'item:',
-                'item' in change ? change.item : '(undefined)'
+                change?.item ?? '(undefined)'
               );
               break;
             default:
