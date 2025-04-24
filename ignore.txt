@@ -1,23 +1,42 @@
 // loggerMiddleware.js
 
+import { deepDiff } from './deepDiff';
+
 export const withLogger = (reducer) => {
   return (state, action) => {
+    const nextState = reducer(state, action);
+
     if (process.env.NODE_ENV !== 'production') {
       console.groupCollapsed(`%cAction: ${action.type}`, 'color: #03A9F4; font-weight: bold');
       console.log('%cPrev State:', 'color: gray', state);
       console.log('%cAction:', 'color: blue', action);
-    }
+      console.log('%cNext State:', 'color: green', nextState);
 
-    const newState = reducer(state, action);
+      const changes = deepDiff(state, nextState);
 
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('%cNext State:', 'color: green', newState);
+      if (changes.length === 0) {
+        console.log('%cNo state changes detected.', 'color: orange');
+      } else {
+        console.log('%cChanged properties:', 'color: purple', changes.map(c => c.path));
+        changes.forEach(change => {
+          console.log(
+            `%c${change.path}:`,
+            'color: red; font-weight: bold',
+            'from',
+            change.from,
+            'to',
+            change.to
+          );
+        });
+      }
+
       console.groupEnd();
     }
 
-    return newState;
+    return nextState;
   };
 };
+
 
 
 // deepDiff.js
