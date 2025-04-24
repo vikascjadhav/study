@@ -1,6 +1,4 @@
-// loggerMiddleware.js
-
-import { deepDiff } from './deepDiff';
+import { diff } from 'deep-diff';
 
 export const withLogger = (reducer) => {
   return (state, action) => {
@@ -12,21 +10,59 @@ export const withLogger = (reducer) => {
       console.log('%cAction:', 'color: blue', action);
       console.log('%cNext State:', 'color: green', nextState);
 
-      const changes = deepDiff(state, nextState);
+      const differences = diff(state, nextState);
 
-      if (changes.length === 0) {
-        console.log('%cNo state changes detected.', 'color: orange');
+      if (!differences || differences.length === 0) {
+        console.log('%cNo deep state changes detected.', 'color: orange');
       } else {
-        console.log('%cChanged properties:', 'color: purple', changes.map(c => c.path));
-        changes.forEach(change => {
-          console.log(
-            `%c${change.path}:`,
-            'color: red; font-weight: bold',
-            'from',
-            change.from,
-            'to',
-            change.to
-          );
+        console.log('%cDeep State Changes:', 'color: purple');
+
+        differences.forEach((change) => {
+          const path = Array.isArray(change.path)
+            ? change.path.join('.')
+            : '(unknown)';
+
+          switch (change.kind) {
+            case 'E':
+              console.log(
+                `%c[Changed] %c${path}`,
+                'color: red; font-weight: bold',
+                'color: black',
+                'from',
+                change.lhs,
+                'to',
+                change.rhs
+              );
+              break;
+            case 'N':
+              console.log(
+                `%c[Added] %c${path}`,
+                'color: green; font-weight: bold',
+                'color: black',
+                'value:',
+                change.rhs
+              );
+              break;
+            case 'D':
+              console.log(
+                `%c[Deleted] %c${path}`,
+                'color: gray; font-weight: bold',
+                'color: black',
+                'was:',
+                change.lhs
+              );
+              break;
+            case 'A':
+              console.log(
+                `%c[Array Change] %c${path}[${change.index}]`,
+                'color: blue; font-weight: bold',
+                'color: black',
+                change.item
+              );
+              break;
+            default:
+              console.log('%c[Other]', 'color: #999', change);
+          }
         });
       }
 
@@ -36,32 +72,3 @@ export const withLogger = (reducer) => {
     return nextState;
   };
 };
-
-
-
-// deepDiff.js
-
-export const deepDiff = (prev, next, path = '') => {
-  const changes = [];
-
-  const allKeys = new Set([...Object.keys(prev || {}), ...Object.keys(next || {})]);
-
-  allKeys.forEach((key) => {
-    const fullPath = path ? `${path}.${key}` : key;
-    const prevVal = prev?.[key];
-    const nextVal = next?.[key];
-
-    const bothObjects = isObject(prevVal) && isObject(nextVal);
-
-    if (bothObjects) {
-      changes.push(...deepDiff(prevVal, nextVal, fullPath));
-    } else if (prevVal !== nextVal) {
-      changes.push({ path: fullPath, from: prevVal, to: nextVal });
-    }
-  });
-
-  return changes;
-};
-
-const isObject = (val) => typeof val === 'object' && val !== null && !Array.isArray(val);
-
