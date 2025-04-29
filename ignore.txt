@@ -1,5 +1,67 @@
-CacheStatisticsMXBean stats = ManagementFactory.newPlatformMXBeanProxy(
-    mBeanServer,
-    objectName.toString(),
-    CacheStatisticsMXBean.class
-);
+package com.example.cache;
+
+import com.github.benmanes.caffeine.cache.Caffeine;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.caffeine.CaffeineCacheManager;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.time.Duration;
+
+@Configuration
+public class CacheConfig {
+
+    @Bean
+    public CacheManager cacheManager() {
+        Caffeine<Object, Object> caffeine = Caffeine.newBuilder()
+                .maximumSize(1000)
+                .expireAfterWrite(Duration.ofMinutes(10))
+                .recordStats(); // Enable statistics
+
+        CaffeineCacheManager cacheManager = new CaffeineCacheManager("userCache", "productCache", "mathCache");
+        cacheManager.setCaffeine(caffeine);
+        return cacheManager;
+    }
+}
+
+
+
+
+
+
+
+package com.example.cache;
+
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.stats.CacheStats;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.caffeine.CaffeineCache;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+@Component
+public class CacheStatsLogger {
+
+    private static final Logger logger = LoggerFactory.getLogger(CacheStatsLogger.class);
+
+    private final CacheManager cacheManager;
+
+    public CacheStatsLogger(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
+    }
+
+    @Scheduled(fixedRate = 600_000) // Every 10 minutes
+    public void logStats() {
+        cacheManager.getCacheNames().forEach(name -> {
+            org.springframework.cache.Cache springCache = cacheManager.getCache(name);
+            if (springCache instanceof CaffeineCache) {
+                CaffeineCache caffeineCache = (CaffeineCache) springCache;
+                Cache<?, ?> nativeCache = caffeineCache.getNativeCache();
+                CacheStats stats = nativeCache.stats();
+                logger.info("Cache [{}] stats: {}", name, stats);
+            }
+        });
+    }
+}
