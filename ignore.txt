@@ -1,3 +1,66 @@
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.cache.CacheManager;
+import javax.cache.management.CacheStatisticsMXBean;
+import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
+
+@Component
+public class JCacheStatsLogger {
+
+    private final CacheManager jCacheManager;
+
+    public JCacheStatsLogger(CacheManager jCacheManager) {
+        this.jCacheManager = jCacheManager;
+    }
+
+    @Scheduled(fixedRate = 600_000) // every 10 minutes
+    public void logCacheStats() {
+        jCacheManager.getCacheNames().forEach(cacheName -> {
+            try {
+                ObjectName objectName = new ObjectName("javax.cache:type=CacheStatistics," +
+                        "CacheManager=" + ObjectName.quote(jCacheManager.getURI().toString()) +
+                        ",Cache=" + ObjectName.quote(cacheName));
+
+                CacheStatisticsMXBean stats = ManagementFactory.getPlatformMBeanServer()
+                        .newPlatformMXBeanProxy(
+                                ManagementFactory.getPlatformMBeanServer(),
+                                objectName.toString(),
+                                CacheStatisticsMXBean.class
+                        );
+
+                System.out.printf("Cache [%s] - Hits: %d, Misses: %d, Hit%%: %.2f%%%n",
+                        cacheName,
+                        stats.getCacheHits(),
+                        stats.getCacheMisses(),
+                        stats.getCacheHitPercentage());
+
+            } catch (Exception e) {
+                System.err.printf("Unable to read stats for cache [%s]: %s%n", cacheName, e.getMessage());
+            }
+        });
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 import org.ehcache.jsr107.Eh107Configuration;
 import org.ehcache.jsr107.EhcacheCachingProvider;
