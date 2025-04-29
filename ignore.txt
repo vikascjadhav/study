@@ -1,3 +1,28 @@
+
+import org.ehcache.jsr107.Eh107Configuration;
+import org.ehcache.jsr107.EhcacheCachingProvider;
+
+import javax.cache.CacheManager;
+import javax.cache.spi.CachingProvider;
+import org.ehcache.CacheManager as EhcacheManager;
+
+public class CacheUtil {
+
+    public static org.ehcache.CacheManager unwrapEhcacheManager(CacheManager jCacheManager) {
+        // EhcacheCachingProvider is a javax.cache.spi.CachingProvider
+        CachingProvider provider = Caching.getCachingProvider();
+        if (provider instanceof EhcacheCachingProvider) {
+            return ((EhcacheCachingProvider) provider).getCacheManager(
+                provider.getDefaultURI(),
+                provider.getDefaultClassLoader()
+            );
+        }
+        throw new IllegalStateException("Not backed by EhcacheCachingProvider");
+    }
+}
+
+
+
 import org.ehcache.Cache;
 import org.ehcache.CacheManager;
 import org.ehcache.core.statistics.CacheStatistics;
