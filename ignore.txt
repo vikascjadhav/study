@@ -1,5 +1,52 @@
-Class<?> clazz = joinPoint.getTarget().getClass();
-if (clazz.getName().contains("$$")) {
-    clazz = clazz.getSuperclass(); // unwrap CGLIB proxy
+import org.ehcache.Cache;
+import org.ehcache.core.Ehcache;
+import org.ehcache.core.statistics.CacheStatistics;
+import org.ehcache.jsr107.Eh107Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.jcache.JCacheCacheManager;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import javax.cache.CacheManager;
+import javax.cache.Caching;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Component
+public class EhcacheStatsLogger {
+
+    private static final Logger logger = LoggerFactory.getLogger(EhcacheStatsLogger.class);
+
+    @Autowired
+    private javax.cache.CacheManager cacheManager;
+
+    @Scheduled(fixedRate = 10 * 60 * 1000) // every 10 minutes
+    public void logCacheStats() {
+        Set<String> cacheNames = cacheManager.getCacheNames();
+        for (String name : cacheNames) {
+            javax.cache.Cache<Object, Object> jcache = cacheManager.getCache(name);
+            if (jcache != null) {
+                org.ehcache.Cache<?, ?> ehcache = (org.ehcache.Cache<?, ?>) jcache.unwrap(org.ehcache.Cache.class);
+                if (ehcache instanceof Ehcache) {
+                    CacheStatistics stats = ((Ehcache<?, ?>) ehcache).getRuntimeConfiguration()
+                            .getResourcePools().getResourceTypeSet().stream()
+                            .filter(t -> t == org.ehcache.config.ResourceType.Core.HEAP)
+                            .findFirst()
+                            .map(t -> ((Ehcache<?, ?>) ehcache).getStatistics())
+                            .orElse(null);
+
+                    if (stats != null) {
+                        logger.info("Cache '{}' stats — Hits: {}, Misses: {}, Evictions: {}, Hit Ratio: {}",
+                                name,
+                                stats.getCacheHits(),
+                                stats.getCacheMisses(),
+                                stats.getCacheEvictions(),
+                                stats.getCacheHitPercentage());
+                    }
+                }
+            }
+        }
+    }
 }
-Logger logger = LoggerFactory.getLogger(clazz);
