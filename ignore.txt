@@ -1,3 +1,16 @@
+
+
+@Scheduled(fixedRate = 600_000) // every 10 minutes
+public void logCacheSize() {
+    javax.cache.Cache<?, ?> jcache = cacheManager.getCache("myCache");
+    Ehcache<?, ?> ehcache = (Ehcache<?, ?>) jcache.unwrap(org.ehcache.Cache.class);
+    long size = ehcache.getStatistics().getSize();
+    logger.info("Cache 'myCache' contains {} entries", size);
+}
+
+
+
+
 import org.ehcache.Cache;
 import org.ehcache.core.Ehcache;
 import org.ehcache.core.statistics.CacheStatistics;
