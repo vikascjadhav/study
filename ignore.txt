@@ -11,67 +11,33 @@ public class EhcacheConfig {
             Map<String, Map<String, String>> cacheSettings = bindCacheSettings();
 
             cacheSettings.forEach((cacheName, config) -> {
-                long ttl = Long.parseLong(config.getOrDefault("ttlSeconds", "300"));
-                long heap = Long.parseLong(config.getOrDefault("heapEntries", "1000"));
+                long ttl = Long.parseLong(config.get("ttlSeconds"));
+                long heap = Long.parseLong(config.get("heapEntries"));
 
-                // Configure Ehcache-specific settings
+                // Build Cache Configuration with TTL, Heap Size, and Statistics
                 org.ehcache.config.CacheConfiguration<Object, Object> ehcacheConfig =
-                    CacheConfigurationBuilder.newCacheConfigurationBuilder(
-                            Object.class,
-                            Object.class,
-                            ResourcePoolsBuilder.heap(heap)
-                    )
-                    .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(ttl)))
-                    .withService(EnableStatisticsServiceConfigurationBuilder.enableStatistics())
-                    .build();
+                        CacheConfigurationBuilder.newCacheConfigurationBuilder(
+                                Object.class,
+                                Object.class,
+                                ResourcePoolsBuilder.heap(heap)) // Set Heap size
+                        .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(ttl))) // Set TTL
+                        .withService(new org.ehcache.core.config.StatisticsServiceConfiguration()) // Enable statistics
+                        .build();
 
-                // Wrap into JCache configuration
-                CachingProvider provider = Caching.getCachingProvider();
-                javax.cache.CacheManager jCacheManager = provider.getCacheManager();
-                Configuration<Object, Object> jcacheConfig =
-                    Eh107Configuration.fromEhcacheCacheConfiguration(ehcacheConfig);
-
-                jCacheManager.createCache(cacheName, jcacheConfig);
+                // Create cache with the defined configuration in JCache manager
+                javax.cache.CacheManager jCacheManager = cacheManager.unwrap(javax.cache.CacheManager.class);
+                jCacheManager.createCache(cacheName, Eh107Configuration.fromEhcacheCacheConfiguration(ehcacheConfig));
+                System.out.println("Cache Created: " + cacheName + " with TTL: " + ttl + "s and Heap: " + heap);
             });
         };
     }
 
     private Map<String, Map<String, String>> bindCacheSettings() {
-        return Binder.get(env).bind("cache.configs", new TypeReference<>() {}).orElse(Map.of());
+        return Binder.get(env).bind("cache.configs", new TypeReference<Map<String, Map<String, String>>>() {}).orElse(Map.of());
     }
 
     @Bean
     public CacheManager springCacheManager(javax.cache.CacheManager jCacheManager) {
         return new JCacheCacheManager(jCacheManager);
-    }
-}
-
-
-
-@Component
-public class CacheStatsLogger {
-
-    private final javax.cache.CacheManager jCacheManager;
-
-    public CacheStatsLogger(javax.cache.CacheManager jCacheManager) {
-        this.jCacheManager = jCacheManager;
-    }
-
-    @Scheduled(fixedRate = 600_000) // 10 mins
-    public void logCacheStats() {
-        jCacheManager.getCacheNames().forEach(name -> {
-            var cache = jCacheManager.getCache(name);
-            if (cache != null) {
-                var eh107Cache = cache.unwrap(org.ehcache.jsr107.Eh107Cache.class);
-                var stats = eh107Cache.getStatistics();
-
-                System.out.printf("Cache [%s]: Hits=%d, Misses=%d, Puts=%d, Removals=%d%n",
-                        name,
-                        stats.getCacheHits(),
-                        stats.getCacheMisses(),
-                        stats.getCachePuts(),
-                        stats.getCacheRemovals());
-            }
-        });
     }
 }
