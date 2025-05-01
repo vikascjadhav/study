@@ -1,30 +1,25 @@
-import org.ehcache.jsr107.Eh107Configuration;
-import org.ehcache.jsr107.EhcacheCachingProvider;
+import org.ehcache.core.Ehcache;
 import org.springframework.cache.jcache.JCacheCacheManager;
 
 import javax.cache.Cache;
 import javax.cache.CacheManager;
 import javax.cache.Caching;
 
-...
+public void logEhcacheStats(org.springframework.cache.CacheManager springCacheManager) {
+    if (springCacheManager instanceof JCacheCacheManager jCacheCacheManager) {
+        CacheManager jCacheManager = jCacheCacheManager.getCacheManager();
 
-@Autowire
-private org.springframework.cache.CacheManager springCacheManager;
-
-public void logStats() {
-    if (springCacheManager instanceof JCacheCacheManager) {
-        javax.cache.CacheManager jcacheManager = ((JCacheCacheManager) springCacheManager).getCacheManager();
-
-        for (String cacheName : jcacheManager.getCacheNames()) {
-            Cache<?, ?> cache = jcacheManager.getCache(cacheName);
+        for (String name : jCacheManager.getCacheNames()) {
+            Cache<?, ?> cache = jCacheManager.getCache(name);
             if (cache != null) {
-                // Unwrap Ehcache for stats
-                org.ehcache.jsr107.Eh107Cache<?, ?> eh107Cache = (org.ehcache.jsr107.Eh107Cache<?, ?>) cache;
-                org.ehcache.core.Ehcache<?, ?> nativeEhcache = (org.ehcache.core.Ehcache<?, ?>) eh107Cache.unwrap(org.ehcache.Cache.class);
-
-                System.out.println("Stats for cache [" + cacheName + "]: " + nativeEhcache.getRuntimeConfiguration().getResourcePools());
-                System.out.println("Hits: " + nativeEhcache.getStatistics().getCacheHits());
-                System.out.println("Misses: " + nativeEhcache.getStatistics().getCacheMisses());
+                // Unwrap to native Ehcache
+                org.ehcache.Cache<?, ?> nativeCache = cache.unwrap(org.ehcache.Cache.class);
+                if (nativeCache instanceof Ehcache<?, ?> ehcache) {
+                    System.out.println("Stats for cache [" + name + "]:");
+                    System.out.println("Hits: " + ehcache.getStatistics().getCacheHits());
+                    System.out.println("Misses: " + ehcache.getStatistics().getCacheMisses());
+                    System.out.println("Evictions: " + ehcache.getStatistics().getCacheEvictions());
+                }
             }
         }
     }
