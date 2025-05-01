@@ -1,69 +1,49 @@
-import org.ehcache.CacheManager;
-import org.ehcache.config.builders.CacheConfigurationBuilder;
-import org.ehcache.config.builders.CacheManagerBuilder;
-import org.ehcache.config.builders.ExpiryPolicyBuilder;
-import org.ehcache.config.builders.ResourcePoolsBuilder;
-import org.ehcache.core.statistics.DefaultStatisticsService;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import java.time.Duration;
-
-@Configuration
-public class CacheConfig {
-
-    @Bean
-    public CacheManager ehCacheManager(CacheProperties cacheProperties) {
-        DefaultStatisticsService statisticsService = new DefaultStatisticsService();
-        CacheManagerBuilder<?> builder = CacheManagerBuilder.newCacheManagerBuilder()
-                .using(statisticsService);
-
-        cacheProperties.getConfigs().forEach((cacheName, config) -> {
-            builder.withCache(cacheName,
-                    CacheConfigurationBuilder.newCacheConfigurationBuilder(
-                            String.class,
-                            String.class,
-                            ResourcePoolsBuilder.heap(config.getHeapEntries()))
-                            .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(config.getTtlSeconds())))
-            );
-        });
-
-        return builder.build(true); // activates the cache manager
-    }
-}
-
-
-import org.ehcache.CacheManager;
-import org.ehcache.core.statistics.CacheStatistics;
-import org.ehcache.core.statistics.DefaultStatisticsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.cache.Cache;
+import javax.cache.CacheManager;
+import javax.cache.management.CacheStatisticsMXBean;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
+import java.util.Set;
+
 @Component
-public class CacheStatsLogger {
+public class JCacheStatsLogger {
 
-    private static final Logger logger = LoggerFactory.getLogger(CacheStatsLogger.class);
-    private final DefaultStatisticsService statisticsService;
+    private static final Logger logger = LoggerFactory.getLogger(JCacheStatsLogger.class);
+    private final CacheManager cacheManager;
 
-    public CacheStatsLogger(DefaultStatisticsService statisticsService) {
-        this.statisticsService = statisticsService;
+    public JCacheStatsLogger(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
     }
 
-    // Logs every 10 minutes
     @Scheduled(fixedRate = 10 * 60 * 1000)
-    public void logCacheStats() {
-        for (String cacheName : statisticsService.getKnownStatistics().keySet()) {
-            CacheStatistics stats = statisticsService.getCacheStatistics(cacheName);
-            logger.info("Cache [{}] - Hits: {}, Misses: {}, Evictions: {}, Puts: {}, Removals: {}",
-                    cacheName,
-                    stats.getCacheHits(),
-                    stats.getCacheMisses(),
-                    stats.getCacheEvictions(),
-                    stats.getCachePuts(),
-                    stats.getCacheRemovals()
-            );
+    public void logStats() {
+        MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+
+        Set<String> cacheNames = cacheManager.getCacheNames();
+        for (String cacheName : cacheNames) {
+            try {
+                ObjectName objectName = new ObjectName("javax.cache:type=CacheStatistics,CacheManager="
+                        + ObjectName.quote(cacheManager.getURI().toString())
+                        + ",Cache=" + ObjectName.quote(cacheName));
+                CacheStatisticsMXBean stats = javax.management.JMX.newMBeanProxy(
+                        mBeanServer, objectName, CacheStatisticsMXBean.class);
+
+                logger.info("Cache [{}] - Hits: {}, Misses: {}, Puts: {}, Removals: {}, Evictions: {}",
+                        cacheName,
+                        stats.getCacheHits(),
+                        stats.getCacheMisses(),
+                        stats.getCachePuts(),
+                        stats.getCacheRemovals(),
+                        stats.getCacheEvictions());
+            } catch (Exception e) {
+                logger.warn("Failed to get stats for cache {}", cacheName, e);
+            }
         }
     }
 }
