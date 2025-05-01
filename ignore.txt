@@ -1,67 +1,31 @@
-package com.example.cache;
+import org.ehcache.jsr107.Eh107Configuration;
+import org.ehcache.jsr107.EhcacheCachingProvider;
+import org.springframework.cache.jcache.JCacheCacheManager;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.caffeine.CaffeineCacheManager;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import javax.cache.Cache;
+import javax.cache.CacheManager;
+import javax.cache.Caching;
 
-import java.time.Duration;
+...
 
-@Configuration
-public class CacheConfig {
+@Autowire
+private org.springframework.cache.CacheManager springCacheManager;
 
-    @Bean
-    public CacheManager cacheManager() {
-        Caffeine<Object, Object> caffeine = Caffeine.newBuilder()
-                .maximumSize(1000)
-                .expireAfterWrite(Duration.ofMinutes(10))
-                .recordStats(); // Enable statistics
+public void logStats() {
+    if (springCacheManager instanceof JCacheCacheManager) {
+        javax.cache.CacheManager jcacheManager = ((JCacheCacheManager) springCacheManager).getCacheManager();
 
-        CaffeineCacheManager cacheManager = new CaffeineCacheManager("userCache", "productCache", "mathCache");
-        cacheManager.setCaffeine(caffeine);
-        return cacheManager;
-    }
-}
+        for (String cacheName : jcacheManager.getCacheNames()) {
+            Cache<?, ?> cache = jcacheManager.getCache(cacheName);
+            if (cache != null) {
+                // Unwrap Ehcache for stats
+                org.ehcache.jsr107.Eh107Cache<?, ?> eh107Cache = (org.ehcache.jsr107.Eh107Cache<?, ?>) cache;
+                org.ehcache.core.Ehcache<?, ?> nativeEhcache = (org.ehcache.core.Ehcache<?, ?>) eh107Cache.unwrap(org.ehcache.Cache.class);
 
-
-
-
-
-
-
-package com.example.cache;
-
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.stats.CacheStats;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.caffeine.CaffeineCache;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-
-@Component
-public class CacheStatsLogger {
-
-    private static final Logger logger = LoggerFactory.getLogger(CacheStatsLogger.class);
-
-    private final CacheManager cacheManager;
-
-    public CacheStatsLogger(CacheManager cacheManager) {
-        this.cacheManager = cacheManager;
-    }
-
-    @Scheduled(fixedRate = 600_000) // Every 10 minutes
-    public void logStats() {
-        cacheManager.getCacheNames().forEach(name -> {
-            org.springframework.cache.Cache springCache = cacheManager.getCache(name);
-            if (springCache instanceof CaffeineCache) {
-                CaffeineCache caffeineCache = (CaffeineCache) springCache;
-                Cache<?, ?> nativeCache = caffeineCache.getNativeCache();
-                CacheStats stats = nativeCache.stats();
-                logger.info("Cache [{}] stats: {}", name, stats);
+                System.out.println("Stats for cache [" + cacheName + "]: " + nativeEhcache.getRuntimeConfiguration().getResourcePools());
+                System.out.println("Hits: " + nativeEhcache.getStatistics().getCacheHits());
+                System.out.println("Misses: " + nativeEhcache.getStatistics().getCacheMisses());
             }
-        });
+        }
     }
 }
