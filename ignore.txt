@@ -41,3 +41,33 @@ public class EhcacheConfig {
         return new JCacheCacheManager(jCacheManager);
     }
 }
+
+
+
+@Component
+public class CacheStatsLogger {
+
+    private final javax.cache.CacheManager jCacheManager;
+
+    public CacheStatsLogger(javax.cache.CacheManager jCacheManager) {
+        this.jCacheManager = jCacheManager;
+    }
+
+    @Scheduled(fixedRate = 600_000) // Log every 10 minutes
+    public void logCacheStats() {
+        jCacheManager.getCacheNames().forEach(name -> {
+            var cache = jCacheManager.getCache(name);
+            if (cache != null) {
+                var eh107Cache = cache.unwrap(org.ehcache.jsr107.Eh107Cache.class);
+                var stats = eh107Cache.getStatistics();
+
+                System.out.printf("Cache [%s]: Hits=%d, Misses=%d, Puts=%d, Removals=%d%n",
+                        name,
+                        stats.getCacheHits(),
+                        stats.getCacheMisses(),
+                        stats.getCachePuts(),
+                        stats.getCacheRemovals());
+            }
+        });
+    }
+}
