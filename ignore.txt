@@ -1,3 +1,37 @@
+javax.cache.CacheManager jcacheManager = 
+    ((org.springframework.cache.jcache.JCacheCacheManager) springCacheManager).getCacheManager();
+
+import javax.cache.management.CacheStatisticsMXBean;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
+
+public void logJCacheStats(javax.cache.CacheManager jcacheManager) {
+    MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+
+    for (String cacheName : jcacheManager.getCacheNames()) {
+        try {
+            ObjectName objectName = new ObjectName("javax.cache:type=CacheStatistics,CacheManager="
+                    + ObjectName.quote(jcacheManager.getURI().toString())
+                    + ",Cache=" + ObjectName.quote(cacheName));
+
+            CacheStatisticsMXBean stats = javax.management.JMX.newMBeanProxy(
+                    mBeanServer, objectName, CacheStatisticsMXBean.class);
+
+            System.out.printf("Cache [%s]: hits=%d, misses=%d, puts=%d, evictions=%d%n",
+                    cacheName,
+                    stats.getCacheHits(),
+                    stats.getCacheMisses(),
+                    stats.getCachePuts(),
+                    stats.getCacheEvictions());
+        } catch (Exception e) {
+            System.out.println("Stats error for cache: " + cacheName + " - " + e.getMessage());
+        }
+    }
+}
+
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
