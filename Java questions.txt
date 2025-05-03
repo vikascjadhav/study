@@ -1,2 +1,3 @@
 Why 
 Does java interface has Object parent?
+Give example of custom FunctionalInterface
