@@ -1,3 +1,57 @@
+<properties>
+    <java.version>1.8</java.version>
+    <spring-boot.version>2.7.18</spring-boot.version>
+    <confluent.version>7.5.1</confluent.version> <!-- Adjust according to your Confluent version -->
+</properties>
+
+<dependencies>
+    <!-- Spring Boot Starter Web (for Rest API) -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- Spring Boot Starter Kafka -->
+    <dependency>
+        <groupId>org.springframework.kafka</groupId>
+        <artifactId>spring-kafka</artifactId>
+        <version>2.8.0</version> <!-- Use a compatible version with your Spring Boot version -->
+    </dependency>
+
+    <!-- Confluent Kafka Avro Serializer for Schema Registry -->
+    <dependency>
+        <groupId>io.confluent</groupId>
+        <artifactId>kafka-avro-serializer</artifactId>
+        <version>${confluent.version}</version>
+    </dependency>
+
+    <!-- Confluent JSON Schema Serializer -->
+    <dependency>
+        <groupId>io.confluent</groupId>
+        <artifactId>kafka-json-schema-serializer</artifactId>
+        <version>${confluent.version}</version>
+    </dependency>
+
+    <!-- Spring Boot Starter for JSON Schema -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-json</artifactId>
+    </dependency>
+
+    <!-- Jackson (used for JSON serialization/deserialization) -->
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+    </dependency>
+
+    <!-- Spring Boot Starter Actuator (Optional for monitoring) -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+</dependencies>
+
+------------------------------
 <dependencies>
     <!-- Spring Kafka -->
     <dependency>
