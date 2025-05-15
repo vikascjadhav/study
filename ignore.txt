@@ -1,4 +1,125 @@
 
+import React, { useState } from "react";
+
+function TabExample() {
+  const [activeTab, setActiveTab] = useState("tab1");
+
+  return (
+    <div>
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+        <button onClick={() => setActiveTab("tab1")}>Tab 1</button>
+        <button onClick={() => setActiveTab("tab2")}>Tab 2</button>
+        <button onClick={() => setActiveTab("tab3")}>Tab 3</button>
+      </div>
+
+      <div>
+        <TabPanel isActive={activeTab === "tab1"}>
+          <h2>Tab 1 Content</h2>
+          <p>This is content of Tab 1</p>
+        </TabPanel>
+
+        <TabPanel isActive={activeTab === "tab2"}>
+          <h2>Tab 2 Content</h2>
+          <p>This is content of Tab 2</p>
+        </TabPanel>
+
+        <TabPanel isActive={activeTab === "tab3"}>
+          <h2>Tab 3 Content</h2>
+          <p>This is content of Tab 3</p>
+        </TabPanel>
+      </div>
+    </div>
+  );
+}
+
+function TabPanel({ isActive, children }) {
+  return (
+    <div style={{ display: isActive ? "block" : "none" }}>
+      {children}
+    </div>
+  );
+}
+
+export default TabExample;
+
+-------------------------------------
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+
+function TabbedForm() {
+  const [activeTab, setActiveTab] = useState("personal");
+  
+  const { register, handleSubmit, formState: { errors }, watch } = useForm({
+    defaultValues: {
+      name: "",
+      age: "",
+      email: "",
+      address: ""
+    }
+  });
+
+  const onSubmit = (data) => {
+    console.log("Form Data:", data);
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      {/* Tab Buttons */}
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+        <button type="button" onClick={() => setActiveTab("personal")}>Personal Info</button>
+        <button type="button" onClick={() => setActiveTab("contact")}>Contact Info</button>
+      </div>
+
+      {/* Tab Panels */}
+      <div>
+        <TabPanel isActive={activeTab === "personal"}>
+          <h3>Personal Info</h3>
+          <div>
+            <label>Name:</label>
+            <input {...register("name", { required: true })} />
+            {errors.name && <span style={{ color: "red" }}>Name is required</span>}
+          </div>
+          <div>
+            <label>Age:</label>
+            <input type="number" {...register("age", { required: true })} />
+            {errors.age && <span style={{ color: "red" }}>Age is required</span>}
+          </div>
+        </TabPanel>
+
+        <TabPanel isActive={activeTab === "contact"}>
+          <h3>Contact Info</h3>
+          <div>
+            <label>Email:</label>
+            <input type="email" {...register("email", { required: true })} />
+            {errors.email && <span style={{ color: "red" }}>Email is required</span>}
+          </div>
+          <div>
+            <label>Address:</label>
+            <input {...register("address")} />
+          </div>
+        </TabPanel>
+      </div>
+
+      <button type="submit">Submit</button>
+
+      {/* Debugging watch */}
+      <pre>{JSON.stringify(watch(), null, 2)}</pre>
+    </form>
+  );
+}
+
+function TabPanel({ isActive, children }) {
+  return (
+    <div style={{ display: isActive ? "block" : "none" }}>
+      {children}
+    </div>
+  );
+}
+
+export default TabbedForm;
+
+
+
 10.208.211.0
 10.208.211.1
 10.208.211.2
