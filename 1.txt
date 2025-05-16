@@ -1,36 +1,57 @@
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-import java.lang.management.ManagementFactory;
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 
-public class EhcacheJmxStatsLogger {
+// 🔶 SectionBox component
+const SectionBox = ({ title, children }) => {
+  return (
+    <div style={styles.box}>
+      <div style={styles.title}>{title}</div>
+      <div style={styles.content}>
+        {children}
+      </div>
+    </div>
+  );
+};
 
-    public static void logEhcacheStats(String cacheAlias, String cacheManagerName) {
-        try {
-            MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+// 🔶 Styles in JS
+const styles = {
+  box: {
+    position: 'relative',
+    border: '2px solid #888',
+    borderRadius: '8px',
+    padding: '16px',
+    margin: '20px 0'
+  },
+  title: {
+    position: 'absolute',
+    top: '-12px',
+    left: '16px',
+    background: 'white',
+    padding: '0 8px',
+    fontWeight: 'bold',
+    fontSize: '14px',
+    color: '#333'
+  },
+  content: {
+    marginTop: '8px'
+  }
+};
 
-            String jmxObjectName = String.format(
-                "org.ehcache:type=CacheStatistics,CacheManager=%s,Cache=%s",
-                ObjectName.quote(cacheManagerName),
-                ObjectName.quote(cacheAlias)
-            );
+// 🔶 Example App
+const App = () => (
+  <div style={{ padding: '20px' }}>
+    <SectionBox title="User Details">
+      <p>Name: Alice</p>
+      <p>Age: 25</p>
+    </SectionBox>
 
-            ObjectName objectName = new ObjectName(jmxObjectName);
+    <SectionBox title="Account Info">
+      <p>Email: alice@example.com</p>
+      <p>Status: Active</p>
+    </SectionBox>
+  </div>
+);
 
-            Long hitCount = (Long) mBeanServer.getAttribute(objectName, "CacheHits");
-            Long missCount = (Long) mBeanServer.getAttribute(objectName, "CacheMisses");
-            Long putCount = (Long) mBeanServer.getAttribute(objectName, "CachePuts");
-            Long removalCount = (Long) mBeanServer.getAttribute(objectName, "CacheRemovals");
-            Long size = (Long) mBeanServer.getAttribute(objectName, "Size");
-
-            System.out.println("Cache Name: " + cacheAlias);
-            System.out.println("Hits: " + hitCount);
-            System.out.println("Misses: " + missCount);
-            System.out.println("Puts: " + putCount);
-            System.out.println("Removals: " + removalCount);
-            System.out.println("Size (entry count): " + size);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-}
+// 🔶 Render it
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
