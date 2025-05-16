@@ -1,40 +1,42 @@
-<dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>com.fasterxml.jackson</groupId>
-      <artifactId>jackson-bom</artifactId>
-      <version>2.13.0</version> <!-- or 2.14.x or 2.15.x depending on your setup -->
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
-  </dependencies>
-</dependencyManagement>
+import org.ehcache.Cache;
+import org.ehcache.CacheManager;
+import org.ehcache.core.statistics.CacheStatistics;
+import org.ehcache.core.Ehcache;
+import org.ehcache.core.statistics.TierStatistics;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-<dependencies>
-  <dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-  </dependency>
-  <dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-core</artifactId>
-  </dependency>
-  <dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-annotations</artifactId>
-  </dependency>
-</dependencies>
+public class EhcacheStatsLogger {
 
+    private static final Logger logger = LoggerFactory.getLogger(EhcacheStatsLogger.class);
 
+    private final CacheManager cacheManager;
 
-<dependency>
-  <groupId>io.confluent</groupId>
-  <artifactId>kafka-json-serializer</artifactId>
-  <version>7.0.1</version>
-  <exclusions>
-    <exclusion>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-    </exclusion>
-  </exclusions>
-</dependency>
+    public EhcacheStatsLogger(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
+    }
+
+    public void logCacheStats() {
+        cacheManager.getRuntimeConfiguration().getCacheConfigurations().keySet()
+                .forEach(cacheName -> {
+                    Cache<Object, Object> cache = cacheManager.getCache(cacheName, Object.class, Object.class);
+
+                    if (cache instanceof Ehcache) {
+                        Ehcache<?, ?> ehcache = (Ehcache<?, ?>) cache;
+                        CacheStatistics statistics = ehcache.getStatistics();
+
+                        long entryCount = statistics.getKnownSize();
+                        logger.info("Cache '{}' entries: {}", cacheName, entryCount);
+
+                        // Tier Statistics for memory usage
+                        for (TierStatistics tierStat : statistics.getTierStatistics()) {
+                            String tierName = tierStat.getTierName();
+                            long occupiedBytes = tierStat.getOccupiedByteSize();
+                            double sizeInMB = occupiedBytes / (1024.0 * 1024.0);
+
+                            logger.info("Cache '{}' Tier '{}' Size: {} MB", cacheName, tierName, String.format("%.2f", sizeInMB));
+                        }
+                    }
+                });
+    }
+}
