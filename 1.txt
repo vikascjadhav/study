@@ -1,42 +1,36 @@
-import org.ehcache.Cache;
-import org.ehcache.CacheManager;
-import org.ehcache.core.statistics.CacheStatistics;
-import org.ehcache.core.Ehcache;
-import org.ehcache.core.statistics.TierStatistics;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
 
-public class EhcacheStatsLogger {
+public class EhcacheJmxStatsLogger {
 
-    private static final Logger logger = LoggerFactory.getLogger(EhcacheStatsLogger.class);
+    public static void logEhcacheStats(String cacheAlias, String cacheManagerName) {
+        try {
+            MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
 
-    private final CacheManager cacheManager;
+            String jmxObjectName = String.format(
+                "org.ehcache:type=CacheStatistics,CacheManager=%s,Cache=%s",
+                ObjectName.quote(cacheManagerName),
+                ObjectName.quote(cacheAlias)
+            );
 
-    public EhcacheStatsLogger(CacheManager cacheManager) {
-        this.cacheManager = cacheManager;
-    }
+            ObjectName objectName = new ObjectName(jmxObjectName);
 
-    public void logCacheStats() {
-        cacheManager.getRuntimeConfiguration().getCacheConfigurations().keySet()
-                .forEach(cacheName -> {
-                    Cache<Object, Object> cache = cacheManager.getCache(cacheName, Object.class, Object.class);
+            Long hitCount = (Long) mBeanServer.getAttribute(objectName, "CacheHits");
+            Long missCount = (Long) mBeanServer.getAttribute(objectName, "CacheMisses");
+            Long putCount = (Long) mBeanServer.getAttribute(objectName, "CachePuts");
+            Long removalCount = (Long) mBeanServer.getAttribute(objectName, "CacheRemovals");
+            Long size = (Long) mBeanServer.getAttribute(objectName, "Size");
 
-                    if (cache instanceof Ehcache) {
-                        Ehcache<?, ?> ehcache = (Ehcache<?, ?>) cache;
-                        CacheStatistics statistics = ehcache.getStatistics();
+            System.out.println("Cache Name: " + cacheAlias);
+            System.out.println("Hits: " + hitCount);
+            System.out.println("Misses: " + missCount);
+            System.out.println("Puts: " + putCount);
+            System.out.println("Removals: " + removalCount);
+            System.out.println("Size (entry count): " + size);
 
-                        long entryCount = statistics.getKnownSize();
-                        logger.info("Cache '{}' entries: {}", cacheName, entryCount);
-
-                        // Tier Statistics for memory usage
-                        for (TierStatistics tierStat : statistics.getTierStatistics()) {
-                            String tierName = tierStat.getTierName();
-                            long occupiedBytes = tierStat.getOccupiedByteSize();
-                            double sizeInMB = occupiedBytes / (1024.0 * 1024.0);
-
-                            logger.info("Cache '{}' Tier '{}' Size: {} MB", cacheName, tierName, String.format("%.2f", sizeInMB));
-                        }
-                    }
-                });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
