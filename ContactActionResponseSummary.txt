@@ -1,0 +1,268 @@
+
+import ReactDOM from 'react-dom/client';
+import React, { useState, useEffect, useRef } from 'react';
+import App from './App.js'
+
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+
+
+
+
+import React, { useState } from 'react';
+import ContactActionResponseSummary from './ContactActionResponseSummary.js';
+
+export default function App() {
+  const [mode, setMode]     = useState('create');   // 'create' | 'modify' | 'delete'
+  const [status, setStatus] = useState('success');
+
+  // After modify alert is shown, return to create mode
+  const handleModifyAlert = () => setMode('create');
+
+  return (
+    <div style={{ padding: '1rem' }}>
+      {/* Controls */}
+      <div style={{ marginBottom: '1rem' }}>
+        <button onClick={() => setMode('create')}>Create</button>
+        <button onClick={() => setMode('modify')} style={{ marginLeft: 8 }}>
+          Modify (Alert)
+        </button>
+        <button onClick={() => setMode('delete')} style={{ marginLeft: 8 }}>
+          Delete
+        </button>
+        <button onClick={() => setStatus('success')} style={{ marginLeft: 8 }}>
+          Success
+        </button>
+        <button onClick={() => setStatus('failed')} style={{ marginLeft: 8 }}>
+          Failed
+        </button>
+      </div>
+
+      {/* Inline summary for create & delete */}
+      <ContactActionResponseSummary
+        action={mode}
+        status={status}
+        contactId="C-1029384756"
+        uploadedSuccessCount={3}
+        uploadedFailureCount={1}
+        onLaunchTodo={() => alert('Launching Todo App...')}
+        onModifyAlert={handleModifyAlert}
+      />
+    </div>
+  );
+}
+
+
+
+
+
+
+
+
+import React, { useState, useEffect } from 'react';
+import { FiCopy } from 'react-icons/fi';
+import './ContactActionResponseSummary.css';
+
+export default function ContactActionResponseSummary({
+  action,
+  status,
+  contactId,
+  uploadedSuccessCount,
+  uploadedFailureCount,
+  onLaunchTodo,
+  onModifyAlert
+}) {
+  const [copied, setCopied] = useState(false);
+  const isCreate = action === 'create';
+  const isSuccess = status === 'success';
+  const headerClass = isSuccess ? 'header-success' : 'header-failed';
+  const textClass   = isSuccess ? '' : 'text-failed';
+
+  useEffect(() => {
+    if (action === 'modify') {
+      // Build summary text
+      let msg = `Modify Contact — ${isSuccess ? 'Success' : 'Failed'}\n`;
+      msg += `Contact ID: ${contactId}\n`;
+      if (isSuccess) {
+        msg += `Files Uploaded: ${uploadedSuccessCount} success`;
+        if (uploadedFailureCount) {
+          msg += `, ${uploadedFailureCount} failed`;
+        }
+      }
+      alert(msg);
+      onModifyAlert(); // notify parent to switch mode
+    }
+  }, [action]);
+
+  const copyId = () => {
+    if (!contactId) return;
+    navigator.clipboard.writeText(contactId).then(() => setCopied(true));
+  };
+  useEffect(() => {
+    if (copied) {
+      const t = setTimeout(() => setCopied(false), 1500);
+      return () => clearTimeout(t);
+    }
+  }, [copied]);
+
+  // Inline only for create/delete
+  if (action === 'modify') return null;
+
+  return (
+    <div className="summary-box">
+      <div className={`summary-header ${headerClass}`}>
+        <h2>
+          {action.charAt(0).toUpperCase() + action.slice(1)} Contact —{' '}
+          <span className={textClass}>{isSuccess ? 'Success' : 'Failed'}</span>
+        </h2>
+      </div>
+
+      <div className="summary-item">
+        <span className="label">Contact ID:</span>
+        <span
+          className={`value ${textClass} copy-on-dblclick`}
+          title="Double-click or click icon to copy"
+          onDoubleClick={copyId}
+        >
+          {contactId || '—'}
+          {contactId && <FiCopy className="copy-icon" onClick={copyId} />}
+        </span>
+      </div>
+
+      {isCreate && isSuccess && (
+        <>
+          <div className="summary-item">
+            <span className="label">Files Uploaded:</span>
+            <span className="value">
+              {uploadedSuccessCount} success
+              {uploadedSuccessCount !== 1 && 'es'}
+              {uploadedFailureCount > 0 &&
+                `, ${uploadedFailureCount} failed`}
+            </span>
+          </div>
+
+          <button className="todo-button" onClick={onLaunchTodo}>
+            Launch Todo
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
+
+
+
+
+
+
+
+
+
+:root {
+  --clr-primary: #1e88e5;
+  --clr-success: #2e7d32;
+  --clr-failed: #c62828;
+  --clr-bg: #ffffff;
+  --clr-text: #333333;
+  --clr-muted: #666666;
+  --radius: 8px;
+  --font: 'Segoe UI', Tahoma, sans-serif;
+}
+
+.summary-box {
+  background: var(--clr-bg);
+  border: 1px solid #e0e0e0;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  font-family: var(--font);
+  color: var(--clr-text);
+}
+
+.summary-header h2 {
+  margin: 0 0 1rem;
+  font-size: 1.3rem;
+  line-height: 1.2;
+}
+
+.header-success h2 {
+  color: var(--clr-success);
+}
+
+.header-failed h2 {
+  color: var(--clr-failed);
+}
+
+.summary-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.label {
+  flex: 0 0 140px;
+  font-weight: 600;
+}
+
+.value {
+  flex: 1 1 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: monospace;
+}
+
+.text-failed {
+  color: var(--clr-failed);
+}
+
+.copy-icon {
+  cursor: pointer;
+  color: var(--clr-muted);
+  transition: color 0.2s;
+}
+
+.copy-icon:hover {
+  color: var(--clr-text);
+}
+
+.todo-button {
+  margin-top: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background: var(--clr-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.todo-button:hover {
+  background: #1565c0;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .summary-box {
+    padding: 1rem;
+    margin: 1rem;
+  }
+
+  .label {
+    flex: 0 0 100%;
+    margin-bottom: 0.25rem;
+  }
+
+  .value {
+    flex: 0 0 100%;
+  }
+
+  .todo-button {
+    width: 100%;
+  }
+}
