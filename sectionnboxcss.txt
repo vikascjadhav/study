@@ -110,4 +110,76 @@ export default SectionBox;
     font-size: 13.5px;
   }
 }
+-----------------------------------------
+
+.section-box {
+  position: relative;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 20px 0;
+  background-color: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
+}
+
+.section-box:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+  position: absolute;
+  top: -10px;
+  left: 12px;
+  background: #ffffff;
+  padding: 0 8px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #344054;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.section-content {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #475467;
+  line-height: 1.5;
+}
+
+/* Responsive Adjustments */
+
+/* Tablets (<= 768px) */
+@media (max-width: 768px) {
+  .section-box {
+    padding: 14px;
+    margin: 16px 0;
+  }
+
+  .section-title {
+    font-size: 12.5px;
+    left: 10px;
+  }
+
+  .section-content {
+    font-size: 13.5px;
+  }
+}
+
+/* Mobile phones (<= 480px) */
+@media (max-width: 480px) {
+  .section-box {
+    padding: 12px;
+    margin: 12px 0;
+  }
+
+  .section-title {
+    font-size: 12px;
+    left: 8px;
+  }
+
+  .section-content {
+    font-size: 13px;
+  }
+}
 
