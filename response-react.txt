@@ -1,0 +1,201 @@
+/* ContactActionResponseSummary.css */
+
+.summary-box {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 600px;
+  margin: 20px auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.summary-box h2 {
+  margin-top: 0;
+  font-size: 20px;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+.summary-section {
+  margin-top: 16px;
+}
+
+.label {
+  font-weight: 600;
+  color: #555;
+  margin-right: 8px;
+}
+
+.contact-id {
+  display: inline-block;
+  background: #e6f4ff;
+  color: #0056b3;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: monospace;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+
+.contact-id:hover {
+  background: #d0eaff;
+  color: #003d80;
+}
+
+.attachments-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0 0;
+}
+
+.attachments-list li {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.success {
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+.failed {
+  color: #c62828;
+  font-weight: 500;
+}
+
+.error-text,
+.attachments-error {
+  background: #ffebee;
+  color: #b71c1c;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-top: 12px;
+  font-weight: 500;
+}
+
+.delete-message {
+  font-style: italic;
+  color: #6d6d6d;
+  margin-top: 12px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .summary-box {
+    padding: 16px;
+  }
+
+  .contact-id {
+    display: block;
+    margin-top: 6px;
+  }
+
+  .summary-box h2 {
+    font-size: 18px;
+  }
+}
+------------------------
+
+
+/* ContactActionResponseSummary.css */
+
+.summary-box {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 600px;
+  margin: 20px auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.summary-box h2 {
+  margin-top: 0;
+  font-size: 20px;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+.summary-section {
+  margin-top: 16px;
+}
+
+.label {
+  font-weight: 600;
+  color: #555;
+  margin-right: 8px;
+}
+
+.contact-id {
+  display: inline-block;
+  background: #e6f4ff;
+  color: #0056b3;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: monospace;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+
+.contact-id:hover {
+  background: #d0eaff;
+  color: #003d80;
+}
+
+.attachments-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0 0;
+}
+
+.attachments-list li {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.success {
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+.failed {
+  color: #c62828;
+  font-weight: 500;
+}
+
+.error-text,
+.attachments-error {
+  background: #ffebee;
+  color: #b71c1c;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-top: 12px;
+  font-weight: 500;
+}
+
+.delete-message {
+  font-style: italic;
+  color: #6d6d6d;
+  margin-top: 12px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .summary-box {
+    padding: 16px;
+  }
+
+  .contact-id {
+    display: block;
+    margin-top: 6px;
+  }
+
+  .summary-box h2 {
+    font-size: 18px;
+  }
+}
