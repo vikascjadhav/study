@@ -1,0 +1,139 @@
+import React from 'react';
+import PartnerDetailsCard from './PartnerDetailsCard';
+
+const App = () => {
+  return (
+    <>
+    <PartnerDetailsCard
+      partnerName="Global Fin Partners"
+      bankingRelations={['UBS Wealth', 'Credit Suisse']}
+      clientAdvisors={[
+        { name: 'Anna Keller' },
+        { name: 'David Lin' },
+        { name: 'Priya Shah' },
+        { name: 'Carlos Mendes' },
+        {name: 'xyz '}
+      ]}
+    />
+
+    <PartnerDetailsCard
+      partnerName=''
+      bankingRelations={[]}
+      clientAdvisors={[
+     
+      ]}
+    />
+        </>
+  );
+};
+
+export default App;
+
+
+
+.partner-card {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  background-color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.card-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.card-section {
+  flex: 1 1 250px;
+  min-width: 250px;
+}
+
+.label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.value {
+  font-size: 16px;
+  color: #111;
+}
+
+.client-advisors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.advisor-name {
+  background-color: #e8f0fe;
+  color: #1a3f8a;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-weight: 500;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+
+
+
+
+
+
+
+import React from 'react';
+import './PartnerDetailsCard.css';
+
+const PartnerDetailsCard = ({
+  partnerName = '',
+  bankingRelations = [],
+  clientAdvisors = [],
+}) => {
+  return (
+    <div className="partner-card">
+      <div className="card-row">
+        <div className="card-section">
+          <div className="label">Partner Name:</div>
+          <div className="value">{partnerName || 'N/A'}</div>
+        </div>
+
+        <div className="card-section">
+          <div className="label">Banking Relations:</div>
+          <div className="value">
+            {bankingRelations.length > 0
+              ? bankingRelations.join(', ')
+              : 'N/A'}
+          </div>
+        </div>
+
+        <div className="card-section">
+          <div className="label">Client Advisors:</div>
+          <div className="client-advisors">
+            {clientAdvisors.length > 0 ? (
+              clientAdvisors.map((advisor, index) => (
+                <span className="advisor-name" key={index}>
+                  {advisor.name || 'Unknown'}
+                </span>
+              ))
+            ) : (
+              <span className="value">N/A</span>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PartnerDetailsCard;
