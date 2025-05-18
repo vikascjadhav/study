@@ -1,0 +1,291 @@
+import React from "react";
+import "./PartnerDetailsCard.css";
+
+const PartnerDetailsCard = ({
+  partner = "",
+  bankingRelations = [],
+  clientAdvisors = [],
+  domicile = { fullAddress: "", country: "", countryCode: "" },
+}) => {
+  const countryCode = domicile?.countryCode?.toLowerCase();
+
+  return (
+    <div className="partner-card">
+      <div className="partner-row">
+        {/* Partner Name */}
+        <div className="partner-section partner-name">
+          <div className="label">Partner Name:</div>
+          <div className="value">{partner || "N/A"}</div>
+        </div>
+
+        {/* Banking Relations */}
+        <div className="partner-section banking-relations">
+          <div className="label">Banking Relations:</div>
+          <div className="value banking-list">
+            {bankingRelations.length > 0 ? (
+              bankingRelations.map((bank, idx) => (
+                <div key={idx} className="bank-badge">
+                  {bank}
+                </div>
+              ))
+            ) : (
+              <div className="empty">N/A</div>
+            )}
+          </div>
+        </div>
+
+        {/* Client Advisors */}
+        <div className="partner-section client-advisors">
+          <div className="label">Client Advisors:</div>
+          <div className="value advisors-list">
+            {clientAdvisors.length > 0 ? (
+              clientAdvisors.map(({ name, initials }, idx) => (
+                <div key={idx} className="advisor-badge" title={name}>
+                  {initials || (name ? name.charAt(0).toUpperCase() : "?")}
+                </div>
+              ))
+            ) : (
+              <div className="empty">N/A</div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Domicile */}
+      <div className="partner-row domicile-row">
+        <div className="label domicile-label">Domicile:</div>
+        <div className="domicile-content">
+          <div className="address">
+            {domicile.fullAddress
+              ? domicile.fullAddress.split("\n").map((line, i) => (
+                  <div key={i}>{line}</div>
+                ))
+              : "N/A"}
+          </div>
+          <div className="country">
+            {countryCode && (
+              <img
+                className="flag-icon"
+                src={`https://flagcdn.com/w40/${countryCode}.png`}
+                alt={domicile.country || "Country flag"}
+                loading="lazy"
+                width={24}
+                height={16}
+              />
+            )}
+            <span>{domicile.country || "Unknown"}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PartnerDetailsCard;
+
+
+
+
+
+
+
+
+
+
+.partner-card {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px 24px;
+  border: 1.8px solid #ddd;
+  border-radius: 12px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Rows */
+.partner-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Sections inside first row */
+.partner-section {
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  flex: 1;
+  max-width: 300px;
+}
+
+/* Partner Name - left aligned */
+.partner-name {
+  max-width: 220px;
+}
+
+/* Labels */
+.label {
+  font-weight: 600;
+  font-size: 15px;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+/* Values */
+.value {
+  font-size: 15px;
+  color: #444;
+}
+
+/* Banking Relations */
+.banking-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.bank-badge {
+  padding: 6px 14px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 18px;
+  font-size: 14px;
+  font-weight: 500;
+  user-select: none;
+}
+
+/* Client Advisors */
+.advisors-list {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.advisor-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #5a9bd8;
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  cursor: default;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Empty fallback text */
+.empty {
+  color: #888;
+  font-style: italic;
+}
+
+/* Domicile row */
+.domicile-row {
+  flex-wrap: nowrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* Domicile label */
+.domicile-label {
+  min-width: 100px;
+  font-weight: 600;
+  color: #333;
+  font-size: 15px;
+}
+
+/* Domicile content */
+.domicile-content {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Address */
+.address {
+  white-space: pre-wrap;
+  margin-bottom: 6px;
+}
+
+/* Country */
+.country {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  color: #222;
+}
+
+/* Flag icon */
+.flag-icon {
+  border-radius: 3px;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .partner-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .partner-section {
+    max-width: 100%;
+  }
+
+  .domicile-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+import React from "react";
+import PartnerDetailsCard from "./PartnerDetailsCard";
+
+const data = {
+  partner: "Acme Corporation",
+  bankingRelations: ["JPMorgan Chase", "Citibank", "HSBC"],
+  clientAdvisors: [
+    { name: "John Smith", initials: "JS" },
+    { name: "Emily Davis", initials: "ED" },
+    { name: "Carlos Mendez", initials: "CM" },
+  ],
+  domicile: {
+    fullAddress: "123 Elm Street\nSuite 400\nSpringfield, IL 62704",
+    country: "United States",
+    countryCode: "us",
+  },
+};
+
+export default function App() {
+  return (
+    <div>
+      <PartnerDetailsCard {...data} />
+    </div>
+  );
+}
