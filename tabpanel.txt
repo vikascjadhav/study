@@ -1,3 +1,17 @@
+
+
+
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.visible {
+  display: block;
+}
+
+
+
 import React, { useState } from 'react';
 import './App.css';
 import StudentForm from './StudentForm';
