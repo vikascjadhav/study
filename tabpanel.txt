@@ -1,175 +1,43 @@
+// File: TabPanelWrapper.js
 
+import React from 'react';
+import './TabPanelWrapper.css';
 
-
-
-.tab-panel {
-  display: none;
-}
-
-.tab-panel.visible {/* Reset some defaults */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-/* Layout container */
-.container {
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 20px;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-radius: 10px;
-}
-
-/* Title */
-.title {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 2rem;
-  color: #333;
-}
-
-/* Tabs */
-.tab-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.tab-button {
-  padding: 10px 20px;
-  border: none;
-  background-color: #eee;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: all 0.2s ease;
-}
-
-.tab-button:hover {
-  background-color: #ddd;
-}
-
-.tab-button.active {
-  background-color: #007bff;
-  color: #fff;
-}
-
-/* Form styling */
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  margin-bottom: 5px;
-  font-weight: 500;
-}
-
-.form-group input {
-  padding: 10px;
-  font-size: 1rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  transition: border 0.2s;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: #007bff;
-}
-
-/* Submit button */
-.submit-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 12px;
-  font-size: 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.submit-button:hover {
-  background-color: #0056b3;
-}
-
-/* Responsive adjustments */
-@media (max-width: 480px) {
-  .tab-buttons {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .tab-button {
-    width: 100%;
-  }
-}
-
-  display: block;
-}
-
-
-
-import React, { useState } from 'react';
-import './App.css';
-import StudentForm from './StudentForm';
-import TabPanel from './TabPanel';
-
-function App() {
-  const [currentTab, setCurrentTab] = useState(0);
-  const tabs = ['Student A', 'Student B', 'Student C'];
-
+function TabPanelWrapper({ currentTab, children }) {
   return (
-    <div className="container">
-      <h1 className="title">Student Forms</h1>
-
-      <div className="tab-buttons">
-        {tabs.map((label, index) => (
-          <button
-            key={index}
-            className={`tab-button ${currentTab === index ? 'active' : ''}`}
-            onClick={() => setCurrentTab(index)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      <div className="tab-content">
-        <TabPanel isActive={currentTab === 0}>
-          <StudentForm studentName="Student A" />
-        </TabPanel>
-        <TabPanel isActive={currentTab === 1}>
-          <StudentForm studentName="Student B" />
-        </TabPanel>
-        <TabPanel isActive={currentTab === 2}>
-          <StudentForm studentName="Student C" />
-        </TabPanel>
-      </div>
+    <div className="tab-panel-wrapper">
+      {React.Children.map(children, (child, index) =>
+        React.cloneElement(child, {
+          isActive: currentTab === index,
+        })
+      )}
     </div>
   );
 }
 
-export default App;
+export default TabPanelWrapper;
 
 
+
+
+/* File: TabPanelWrapper.css */
+
+.tab-panel-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
+
+
+// File: TabPanel.js
 
 import React from 'react';
 import './TabPanel.css';
 
-function TabPanel({ children, isActive }) {
+function TabPanel({ isActive, children }) {
   return (
     <div className={`tab-panel ${isActive ? 'visible' : 'hidden'}`}>
       {children}
@@ -181,10 +49,21 @@ export default TabPanel;
 
 
 
+/* File: TabPanel.css */
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.visible {
+  display: block;
+}
 
 
 
 
+
+// File: StudentForm.js
 
 import React, { useState } from 'react';
 import './StudentForm.css';
@@ -226,56 +105,7 @@ export default StudentForm;
 
 
 
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.form h2 {
-  margin-bottom: 10px;
-  color: #007bff;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  margin-bottom: 5px;
-  font-weight: 500;
-  color: #333;
-}
-
-.form-group input {
-  padding: 10px;
-  font-size: 1rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  transition: border-color 0.2s;
-}
-
-.form-group input:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-.submit-button {
-  padding: 12px;
-  font-size: 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.submit-button:hover {
-  background-color: #0056b3;
-}
-
+/* File: StudentForm.css */
 
 .form {
   display: flex;
@@ -330,4 +160,137 @@ export default StudentForm;
 
 
 
-  
+
+
+
+
+
+// File: App.js
+
+import React, { useState } from 'react';
+import './App.css';
+import StudentForm from './StudentForm';
+import TabPanelWrapper from './components/TabPanelWrapper';
+import TabPanel from './components/TabPanel';
+
+function App() {
+  const [currentTab, setCurrentTab] = useState(0);
+  const tabs = ['Student A', 'Student B', 'Student C'];
+
+  return (
+    <div className="container">
+      <h1 className="title">Student Forms</h1>
+
+      <div className="tab-buttons">
+        {tabs.map((label, index) => (
+          <button
+            key={index}
+            className={`tab-button ${currentTab === index ? 'active' : ''}`}
+            onClick={() => setCurrentTab(index)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* TabPanelWrapper for managing the visibility of TabPanels */}
+      <TabPanelWrapper currentTab={currentTab}>
+        <TabPanel>
+          <StudentForm studentName="Student A" />
+        </TabPanel>
+        <TabPanel>
+          <StudentForm studentName="Student B" />
+        </TabPanel>
+        <TabPanel>
+          <StudentForm studentName="Student C" />
+        </TabPanel>
+      </TabPanelWrapper>
+    </div>
+  );
+}
+
+export default App;
+
+
+
+
+
+
+
+
+/* File: App.css */
+
+body {
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #333;
+}
+
+.tab-buttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 12px 0;
+  background-color: #f0f0f0;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tab-button:not(:last-child) {
+  border-right: 1px solid #ccc;
+}
+
+.tab-button:hover {
+  background-color: #e0e0e0;
+}
+
+.tab-button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.tab-content {
+  position: relative;
+}
+
+@media (max-width: 480px) {
+  .tab-buttons {
+    flex-direction: column;
+    border-radius: 8px;
+  }
+
+  .tab-button:not(:last-child) {
+    border-right: none;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .tab-button {
+    width: 100%;
+  }
+}
