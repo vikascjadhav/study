@@ -1,91 +1,3 @@
-import React, { useState } from 'react';
-import './App.css';
-
-function TabPanel({ currentTab, tabIndex, children }) {
-  return currentTab === tabIndex ? <div className="tab-panel">{children}</div> : null;
-}
-
-function StudentForm({ studentName }) {
-  const [form, setForm] = useState({ name: '', age: '', grade: '' });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert(`Submitted for ${studentName}:\n` + JSON.stringify(form, null, 2));
-  };
-
-  return (
-    <form className="form" onSubmit={handleSubmit}>
-      <h2>{studentName}</h2>
-      <div className="form-group">
-        <label>Name</label>
-        <input name="name" value={form.name} onChange={handleChange} placeholder="Enter name" />
-      </div>
-      <div className="form-group">
-        <label>Age</label>
-        <input
-          name="age"
-          type="number"
-          value={form.age}
-          onChange={handleChange}
-          placeholder="Enter age"
-        />
-      </div>
-      <div className="form-group">
-        <label>Grade</label>
-        <input
-          name="grade"
-          value={form.grade}
-          onChange={handleChange}
-          placeholder="Enter grade"
-        />
-      </div>
-      <button type="submit" className="submit-button">Submit</button>
-    </form>
-  );
-}
-
-function App() {
-  const [currentTab, setCurrentTab] = useState(0);
-  const tabs = ['Student A', 'Student B', 'Student C'];
-
-  return (
-    <div className="container">
-      <h1 className="title">Student Forms</h1>
-
-      <div className="tab-buttons">
-        {tabs.map((label, index) => (
-          <button
-            key={index}
-            className={`tab-button ${currentTab === index ? 'active' : ''}`}
-            onClick={() => setCurrentTab(index)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      <TabPanel currentTab={currentTab} tabIndex={0}>
-        <StudentForm studentName="Student A" />
-      </TabPanel>
-      <TabPanel currentTab={currentTab} tabIndex={1}>
-        <StudentForm studentName="Student B" />
-      </TabPanel>
-      <TabPanel currentTab={currentTab} tabIndex={2}>
-        <StudentForm studentName="Student C" />
-      </TabPanel>
-    </div>
-  );
-}
-
-export default App;
-
-
-
 /* Reset defaults */
 * {
   box-sizing: border-box;
@@ -126,7 +38,7 @@ body {
   overflow: hidden;
 }
 
-/* Tab buttons - seamless */
+/* Tab buttons */
 .tab-button {
   flex: 1;
   padding: 12px 0;
@@ -150,12 +62,20 @@ body {
   color: white;
 }
 
-/* Tab panel */
-.tab-panel {
-  padding: 10px 0;
+/* Tab panels */
+.tab-content {
+  position: relative;
 }
 
-/* Form layout */
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.visible {
+  display: block;
+}
+
+/* Form styling */
 .form {
   display: flex;
   flex-direction: column;
@@ -167,7 +87,6 @@ body {
   color: #007bff;
 }
 
-/* Form group */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -208,7 +127,7 @@ body {
   background-color: #0056b3;
 }
 
-/* Responsive layout */
+/* Responsive */
 @media (max-width: 480px) {
   .tab-buttons {
     flex-direction: column;
@@ -230,3 +149,85 @@ body {
 
 
 
+
+
+
+
+
+
+
+
+
+import React, { useState } from 'react';
+import './App.css';
+
+function StudentForm({ studentName }) {
+  const [form, setForm] = useState({ name: '', age: '', grade: '' });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert(`Submitted for ${studentName}:\n` + JSON.stringify(form, null, 2));
+  };
+
+  return (
+    <form className="form" onSubmit={handleSubmit}>
+      <h2>{studentName}</h2>
+      <div className="form-group">
+        <label>Name</label>
+        <input name="name" value={form.name} onChange={handleChange} placeholder="Enter name" />
+      </div>
+      <div className="form-group">
+        <label>Age</label>
+        <input name="age" type="number" value={form.age} onChange={handleChange} placeholder="Enter age" />
+      </div>
+      <div className="form-group">
+        <label>Grade</label>
+        <input name="grade" value={form.grade} onChange={handleChange} placeholder="Enter grade" />
+      </div>
+      <button type="submit" className="submit-button">Submit</button>
+    </form>
+  );
+}
+
+function App() {
+  const [currentTab, setCurrentTab] = useState(0);
+  const tabs = ['Student A', 'Student B', 'Student C'];
+
+  return (
+    <div className="container">
+      <h1 className="title">Student Forms</h1>
+
+      <div className="tab-buttons">
+        {tabs.map((label, index) => (
+          <button
+            key={index}
+            className={`tab-button ${currentTab === index ? 'active' : ''}`}
+            onClick={() => setCurrentTab(index)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* All forms stay mounted; only one is visible */}
+      <div className="tab-content">
+        <div className={`tab-panel ${currentTab === 0 ? 'visible' : 'hidden'}`}>
+          <StudentForm studentName="Student A" />
+        </div>
+        <div className={`tab-panel ${currentTab === 1 ? 'visible' : 'hidden'}`}>
+          <StudentForm studentName="Student B" />
+        </div>
+        <div className={`tab-panel ${currentTab === 2 ? 'visible' : 'hidden'}`}>
+          <StudentForm studentName="Student C" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App;
