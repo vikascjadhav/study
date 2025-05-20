@@ -1,0 +1,232 @@
+import React, { useState } from 'react';
+import './App.css';
+
+function TabPanel({ currentTab, tabIndex, children }) {
+  return currentTab === tabIndex ? <div className="tab-panel">{children}</div> : null;
+}
+
+function StudentForm({ studentName }) {
+  const [form, setForm] = useState({ name: '', age: '', grade: '' });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert(`Submitted for ${studentName}:\n` + JSON.stringify(form, null, 2));
+  };
+
+  return (
+    <form className="form" onSubmit={handleSubmit}>
+      <h2>{studentName}</h2>
+      <div className="form-group">
+        <label>Name</label>
+        <input name="name" value={form.name} onChange={handleChange} placeholder="Enter name" />
+      </div>
+      <div className="form-group">
+        <label>Age</label>
+        <input
+          name="age"
+          type="number"
+          value={form.age}
+          onChange={handleChange}
+          placeholder="Enter age"
+        />
+      </div>
+      <div className="form-group">
+        <label>Grade</label>
+        <input
+          name="grade"
+          value={form.grade}
+          onChange={handleChange}
+          placeholder="Enter grade"
+        />
+      </div>
+      <button type="submit" className="submit-button">Submit</button>
+    </form>
+  );
+}
+
+function App() {
+  const [currentTab, setCurrentTab] = useState(0);
+  const tabs = ['Student A', 'Student B', 'Student C'];
+
+  return (
+    <div className="container">
+      <h1 className="title">Student Forms</h1>
+
+      <div className="tab-buttons">
+        {tabs.map((label, index) => (
+          <button
+            key={index}
+            className={`tab-button ${currentTab === index ? 'active' : ''}`}
+            onClick={() => setCurrentTab(index)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <TabPanel currentTab={currentTab} tabIndex={0}>
+        <StudentForm studentName="Student A" />
+      </TabPanel>
+      <TabPanel currentTab={currentTab} tabIndex={1}>
+        <StudentForm studentName="Student B" />
+      </TabPanel>
+      <TabPanel currentTab={currentTab} tabIndex={2}>
+        <StudentForm studentName="Student C" />
+      </TabPanel>
+    </div>
+  );
+}
+
+export default App;
+
+
+
+/* Reset defaults */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Main container */
+.container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Title */
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #333;
+}
+
+/* Tab bar container */
+.tab-buttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Tab buttons - seamless */
+.tab-button {
+  flex: 1;
+  padding: 12px 0;
+  background-color: #f0f0f0;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tab-button:not(:last-child) {
+  border-right: 1px solid #ccc;
+}
+
+.tab-button:hover {
+  background-color: #e0e0e0;
+}
+
+.tab-button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Tab panel */
+.tab-panel {
+  padding: 10px 0;
+}
+
+/* Form layout */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form h2 {
+  margin-bottom: 10px;
+  color: #007bff;
+}
+
+/* Form group */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group input {
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Submit button */
+.submit-button {
+  padding: 12px;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive layout */
+@media (max-width: 480px) {
+  .tab-buttons {
+    flex-direction: column;
+    border-radius: 8px;
+  }
+
+  .tab-button:not(:last-child) {
+    border-right: none;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .tab-button {
+    width: 100%;
+  }
+}
+
+
+
+
+
+
