@@ -1,213 +1,37 @@
-// File: TabPanelWrapper.js
-
+// App.jsx
 import React from 'react';
-import './TabPanelWrapper.css';
+import { TabPanel, Tab } from './TabPanel';
 
-function TabPanelWrapper({ currentTab, children }) {
+const App = () => {
   return (
-    <div className="tab-panel-wrapper">
-      {React.Children.map(children, (child, index) =>
-        React.cloneElement(child, {
-          isActive: currentTab === index,
-        })
-      )}
+    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '20px' }}>
+      <h2>University Dashboard</h2>
+      <TabPanel>
+        <Tab label="Students">
+          <p>Welcome to the Students tab. Manage student details here.</p>
+        </Tab>
+        <Tab label="Departments">
+          <p>Here you can manage all departments.</p>
+        </Tab>
+        <Tab label="Admissions">
+          <p>Admission-related info and actions go here.</p>
+        </Tab>
+        <Tab label="Library">
+          <p>View and manage library records.</p>
+        </Tab>
+        <Tab label="Exams">
+          <p>Schedule and manage exams.</p>
+        </Tab>
+        <Tab label="Results">
+          <p>Upload and review results for students.</p>
+        </Tab>
+        <Tab label="Alumni">
+          <p>Keep track of alumni data and events.</p>
+        </Tab>
+      </TabPanel>
     </div>
   );
-}
-
-export default TabPanelWrapper;
-
-
-
-
-/* File: TabPanelWrapper.css */
-
-.tab-panel-wrapper {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-
-
-
-// File: TabPanel.js
-
-import React from 'react';
-import './TabPanel.css';
-
-function TabPanel({ isActive, children }) {
-  return (
-    <div className={`tab-panel ${isActive ? 'visible' : 'hidden'}`}>
-      {children}
-    </div>
-  );
-}
-
-export default TabPanel;
-
-
-
-/* File: TabPanel.css */
-
-.tab-panel {
-  display: none;
-}
-
-.tab-panel.visible {
-  display: block;
-}
-
-
-
-
-
-// File: StudentForm.js
-
-import React, { useState } from 'react';
-import './StudentForm.css';
-
-function StudentForm({ studentName }) {
-  const [form, setForm] = useState({ name: '', age: '', grade: '' });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert(`Submitted for ${studentName}:\n` + JSON.stringify(form, null, 2));
-  };
-
-  return (
-    <form className="form" onSubmit={handleSubmit}>
-      <h2>{studentName}</h2>
-      <div className="form-group">
-        <label>Name</label>
-        <input name="name" value={form.name} onChange={handleChange} placeholder="Enter name" />
-      </div>
-      <div className="form-group">
-        <label>Age</label>
-        <input name="age" type="number" value={form.age} onChange={handleChange} placeholder="Enter age" />
-      </div>
-      <div className="form-group">
-        <label>Grade</label>
-        <input name="grade" value={form.grade} onChange={handleChange} placeholder="Enter grade" />
-      </div>
-      <button type="submit" className="submit-button">Submit</button>
-    </form>
-  );
-}
-
-export default StudentForm;
-
-
-
-/* File: StudentForm.css */
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.form h2 {
-  margin-bottom: 10px;
-  color: #007bff;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  margin-bottom: 5px;
-  font-weight: 500;
-  color: #333;
-}
-
-.form-group input {
-  padding: 10px;
-  font-size: 1rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  transition: border-color 0.2s;
-}
-
-.form-group input:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-.submit-button {
-  padding: 12px;
-  font-size: 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.submit-button:hover {
-  background-color: #0056b3;
-}
-
-
-
-
-
-
-
-
-
-// File: App.js
-
-import React, { useState } from 'react';
-import './App.css';
-import StudentForm from './StudentForm';
-import TabPanelWrapper from './components/TabPanelWrapper';
-import TabPanel from './components/TabPanel';
-
-function App() {
-  const [currentTab, setCurrentTab] = useState(0);
-  const tabs = ['Student A', 'Student B', 'Student C'];
-
-  return (
-    <div className="container">
-      <h1 className="title">Student Forms</h1>
-
-      <div className="tab-buttons">
-        {tabs.map((label, index) => (
-          <button
-            key={index}
-            className={`tab-button ${currentTab === index ? 'active' : ''}`}
-            onClick={() => setCurrentTab(index)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      {/* TabPanelWrapper for managing the visibility of TabPanels */}
-      <TabPanelWrapper currentTab={currentTab}>
-        <TabPanel>
-          <StudentForm studentName="Student A" />
-        </TabPanel>
-        <TabPanel>
-          <StudentForm studentName="Student B" />
-        </TabPanel>
-        <TabPanel>
-          <StudentForm studentName="Student C" />
-        </TabPanel>
-      </TabPanelWrapper>
-    </div>
-  );
-}
+};
 
 export default App;
 
@@ -216,81 +40,130 @@ export default App;
 
 
 
-
-
-/* File: App.css */
-
-body {
-  background-color: #f8f9fa;
+/* TabPanel.css */
+.tabpanel-container {
+  width: 100%;
   font-family: 'Segoe UI', sans-serif;
-  margin: 0;
-  padding: 0;
 }
 
-.container {
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+.tab-header-scroll {
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
 }
 
-.title {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 2rem;
-  color: #333;
-}
-
-.tab-buttons {
+.tab-header {
   display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  overflow: hidden;
+  border-bottom: 2px solid #ccc;
+  background-color: #f9f9f9;
 }
 
 .tab-button {
-  flex: 1;
-  padding: 12px 0;
-  background-color: #f0f0f0;
+  flex-shrink: 0;
+  padding: 12px 20px;
+  background: none;
   border: none;
-  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.tab-button:not(:last-child) {
-  border-right: 1px solid #ccc;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background 0.2s ease;
+  outline: none;
+  white-space: nowrap;
 }
 
 .tab-button:hover {
-  background-color: #e0e0e0;
+  background-color: #eee;
 }
 
 .tab-button.active {
-  background-color: #007bff;
-  color: white;
+  border-bottom: 3px solid #007bff;
+  background-color: #fff;
+  color: #007bff;
 }
 
 .tab-content {
-  position: relative;
+  padding: 16px;
 }
 
-@media (max-width: 480px) {
-  .tab-buttons {
-    flex-direction: column;
-    border-radius: 8px;
-  }
-
-  .tab-button:not(:last-child) {
-    border-right: none;
-    border-bottom: 1px solid #ccc;
-  }
-
-  .tab-button {
-    width: 100%;
-  }
+.tab-view {
+  display: none;
 }
+
+.tab-view.visible {
+  display: block;
+}
+
+
+
+
+
+// TabPanel.jsx
+import React, { useState, useRef } from 'react';
+import './TabPanel.css';
+
+export const TabPanel = ({ children }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const tabsRef = useRef([]);
+  const tabs = React.Children.toArray(children);
+
+  const focusTab = (index) => {
+    setActiveIndex(index);
+    tabsRef.current[index]?.focus();
+  };
+
+  const handleKeyDown = (e, index) => {
+    const lastIndex = tabs.length - 1;
+    switch (e.key) {
+      case 'ArrowRight':
+        focusTab(index === lastIndex ? 0 : index + 1);
+        break;
+      case 'ArrowLeft':
+        focusTab(index === 0 ? lastIndex : index - 1);
+        break;
+      case 'Home':
+        focusTab(0);
+        break;
+      case 'End':
+        focusTab(lastIndex);
+        break;
+      default:
+        break;
+    }
+  };
+
+  return (
+    <div className="tabpanel-container">
+      <div className="tab-header-scroll">
+        <div className="tab-header" role="tablist">
+          {tabs.map((tab, index) => (
+            <button
+              key={index}
+              className={`tab-button ${index === activeIndex ? 'active' : ''}`}
+              onClick={() => setActiveIndex(index)}
+              ref={(el) => (tabsRef.current[index] = el)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
+              tabIndex={index === activeIndex ? 0 : -1}
+              role="tab"
+              aria-selected={index === activeIndex}
+            >
+              {tab.props.label}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="tab-content">
+        {tabs.map((tab, index) => (
+          <div
+            key={index}
+            className={`tab-view ${index === activeIndex ? 'visible' : 'hidden'}`}
+            role="tabpanel"
+          >
+            {tab.props.children}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export const Tab = ({ children }) => <>{children}</>;
