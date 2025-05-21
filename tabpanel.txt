@@ -1,3 +1,100 @@
+// TabPanel.tsx
+import React, { useState, useRef, ReactElement, KeyboardEvent } from 'react';
+import './TabPanel.css';
+
+interface TabProps {
+  label: string;
+  children: React.ReactNode;
+}
+
+interface TabPanelProps {
+  children: ReactElement<TabProps>[];
+}
+
+export const Tab = ({ children }: TabProps) => {
+  return <>{children}</>;
+};
+
+export const TabPanel = ({ children }: TabPanelProps) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
+  const tabs = React.Children.toArray(children) as ReactElement<TabProps>[];
+
+  const focusTab = (index: number) => {
+    setActiveIndex(index);
+    tabsRef.current[index]?.focus();
+  };
+
+  const handleKeyDown = (e: KeyboardEvent, index: number) => {
+    const lastIndex = tabs.length - 1;
+    switch (e.key) {
+      case 'ArrowRight':
+        focusTab(index === lastIndex ? 0 : index + 1);
+        break;
+      case 'ArrowLeft':
+        focusTab(index === 0 ? lastIndex : index - 1);
+        break;
+      case 'Home':
+        focusTab(0);
+        break;
+      case 'End':
+        focusTab(lastIndex);
+        break;
+    }
+  };
+
+  return (
+    <div className="tabpanel-container">
+      <div className="tab-header-scroll">
+        <div className="tab-header" role="tablist">
+          {tabs.map((tab, index) => (
+            <button
+              key={index}
+              className={`tab-button ${index === activeIndex ? 'active' : ''}`}
+              onClick={() => setActiveIndex(index)}
+              ref={(el) => (tabsRef.current[index] = el)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
+              tabIndex={index === activeIndex ? 0 : -1}
+              role="tab"
+              aria-selected={index === activeIndex}
+            >
+              {tab.props.label}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="tab-content">
+        {tabs.map((tab, index) => (
+          <div
+            key={index}
+            className={`tab-view ${index === activeIndex ? 'visible' : 'hidden'}`}
+            role="tabpanel"
+          >
+            {tab.props.children}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // App.jsx
 import React from 'react';
 import { TabPanel, Tab } from './TabPanel';
