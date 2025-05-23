@@ -1,0 +1,50 @@
+import React from 'react';
+
+const App = () => {
+  return (
+    <div style={styles.container}>
+      <button style={{ ...styles.button, ...styles.enter }}>Enter Contact</button>
+      <button style={{ ...styles.button, ...styles.edit }}>Edit Contact</button>
+      <button style={{ ...styles.button, ...styles.delete }}>Delete Contact</button>
+      <button style={{ ...styles.button, ...styles.close }}>Close</button>
+      <button style={{ ...styles.button, ...styles.save }}>Save Contact</button>
+    </div>
+  );
+};
+
+const styles = {
+  container: {
+    display: 'flex',
+    gap: '12px',
+    padding: '20px',
+    flexWrap: 'wrap',
+  },
+  button: {
+    padding: '10px 18px',
+    fontSize: '16px',
+    borderRadius: '6px',
+    border: 'none',
+    cursor: 'pointer',
+    color: 'white',
+    fontWeight: '600',
+    boxShadow: '0 3px 6px rgba(0,0,0,0.1)',
+    transition: 'background-color 0.3s ease',
+  },
+  enter: {
+    backgroundColor: '#007bff', // blue
+  },
+  edit: {
+    backgroundColor: '#17a2b8', // cyan
+  },
+  delete: {
+    backgroundColor: '#dc3545', // red
+  },
+  close: {
+    backgroundColor: '#6c757d', // gray
+  },
+  save: {
+    backgroundColor: '#28a745', // green
+  },
+};
+
+export default App;
