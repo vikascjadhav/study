@@ -1,3 +1,31 @@
+
+
+
+
+
+.card-section.partner-name {
+  flex: 0 0 30%;
+}
+
+.card-section.banking-relations {
+  flex: 0 0 30%;
+}
+
+.card-section.client-advisors {
+  flex: 0 0 30%;
+}
+
+.card-section.enter-button {
+  flex: 0 0 10%;
+  display: flex;
+  align-items: flex-end; /* align button vertically */
+}
+
+
+
+
+
+
 import React from 'react';
 import './PartnerDetailsCard.css';
 
