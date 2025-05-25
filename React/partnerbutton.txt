@@ -1,3 +1,46 @@
+<div className="card-section client-advisors">
+  <div className="label">Client Advisors</div>
+  <div className="client-advisors">
+    {clientAdvisors.map((advisor, index) => (
+      <div className="advisor-item" key={index}>
+        <div className="advisor-initials">{getInitials(advisor.name)}</div>
+        <div className="advisor-name">{advisor.name}</div>
+      </div>
+    ))}
+  </div>
+</div>
+
+
+
+
+
+.card-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+
+.client-advisors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .partner-row {
   display: flex;
   flex-wrap: nowrap; /* Prevent wrapping */
