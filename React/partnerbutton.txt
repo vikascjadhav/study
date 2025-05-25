@@ -1,3 +1,80 @@
+.client-advisors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+
+.advisor-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #eef3ff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+
+.card-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+
+<div className="card-section client-advisors">
+  <div className="label">Client Advisors</div>
+  <div className="client-advisors">
+    {clientAdvisors.length > 0 ? (
+      clientAdvisors.map((advisor, index) => (
+        <div className="advisor-item" key={index}>
+          <div className="advisor-initials">{getInitials(advisor.name)}</div>
+          <div className="advisor-name">{advisor.name}</div>
+        </div>
+      ))
+    ) : (
+      <div className="value">Not Available</div>
+    )}
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <div className="card-section client-advisors">
   <div className="label">Client Advisors</div>
   <div className="client-advisors">
