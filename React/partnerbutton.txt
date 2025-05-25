@@ -1,0 +1,202 @@
+import React from 'react';
+import './PartnerDetailsCard.css';
+
+const getInitials = (name) => {
+  if (!name) return '';
+  const parts = name.trim().split(' ');
+  return parts.length > 1
+    ? parts[0][0].toUpperCase() + parts[1][0].toUpperCase()
+    : parts[0][0].toUpperCase();
+};
+
+const PartnerDetailsCard = ({
+  partnerName = '',
+  bankingRelations = [],
+  clientAdvisors = [],
+  onEnterContact = () => {},
+}) => {
+  return (
+    <div className="partner-card">
+      <div className="partner-row">
+        <div className="card-section">
+          <div className="label">Partner Name</div>
+          <div className="value">{partnerName || 'Not Available'}</div>
+        </div>
+
+        <div className="card-section">
+          <div className="label">Banking Relations</div>
+          <div className="relation-items">
+            {bankingRelations.length > 0 ? (
+              bankingRelations.map((rel, index) => (
+                <div className="relation-item" key={index}>
+                  {rel}
+                </div>
+              ))
+            ) : (
+              <span className="value">Not Available</span>
+            )}
+          </div>
+        </div>
+
+        <div className="card-section">
+          <div className="label">Client Advisors</div>
+          <div className="client-advisors">
+            {clientAdvisors.length > 0 ? (
+              clientAdvisors.map((advisor, index) => (
+                <div className="advisor-item" key={index}>
+                  <div className="advisor-initials">
+                    {getInitials(advisor.name)}
+                  </div>
+                  <span className="advisor-name">
+                    {advisor.name || 'Unknown'}
+                  </span>
+                </div>
+              ))
+            ) : (
+              <span className="value">Not Available</span>
+            )}
+          </div>
+        </div>
+
+        <div className="card-section button-section">
+          <button className="enter-contact-button" onClick={onEnterContact}>
+            + Enter Contact
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PartnerDetailsCard;
+
+
+
+
+
+
+
+
+
+
+
+
+.partner-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  margin: 16px 0;
+}
+
+.partner-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.card-section {
+  flex: 1 1 30%;
+  min-width: 200px;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.value {
+  font-size: 15px;
+  color: #222;
+}
+
+.relation-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.relation-item {
+  display: inline-block;
+  background-color: #f1f5f9;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #1a202c;
+  border: 1px solid #e0e0e0;
+  max-width: fit-content;
+  white-space: nowrap;
+}
+
+.client-advisors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.advisor-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #eef3ff;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+.advisor-initials {
+  width: 28px;
+  height: 28px;
+  background-color: #3182ce;
+  color: white;
+  font-weight: bold;
+  font-size: 13px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.advisor-name {
+  font-size: 14px;
+  color: #222;
+}
+
+.button-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 200px;
+}
+
+.enter-contact-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.enter-contact-button:hover {
+  background-color: #388e3c;
+}
+
+@media (max-width: 768px) {
+  .partner-row {
+    flex-direction: column;
+  }
+
+  .card-section {
+    flex: 1 1 100%;
+  }
+
+  .button-section {
+    justify-content: flex-start;
+  }
+}
