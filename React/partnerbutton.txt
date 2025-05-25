@@ -1,3 +1,19 @@
+.partner-row {
+  display: flex;
+  flex-wrap: nowrap; /* Prevent wrapping */
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  overflow-x: auto; /* Allow scroll instead of wrap */
+  width: 100%;
+}
+
+
+.partner-card {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
 
 
 
