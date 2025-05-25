@@ -1,3 +1,21 @@
+
+
+
+
+
+.partner-info-card {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;          /* Light gray border */
+  border-radius: 12px;                /* Rounded corners */
+  padding: 16px;                      /* Internal spacing */
+  margin: 12px 0;                     /* Minimal vertical spacing */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04); /* Soft depth */
+  box-sizing: border-box;
+}
+
+
+
+
 .initial-circle {
   width: 32px;
   height: 32px;
