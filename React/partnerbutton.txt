@@ -12,6 +12,72 @@
 
 
 
+.client-advisors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+
+
+
+
+
+.advisor-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #eef3ff;
+  border-radius: 6px;
+  padding: 6px 10px;
+  max-width: 100%; /* Prevents horizontal overflow */
+  white-space: nowrap;
+}
+
+
+.advisor-item {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div className="card-section client-advisors">
+  <div className="label">Client Advisors</div>
+  <div className="client-advisors">
+    {clientAdvisors.map((advisor, index) => (
+      <div className="advisor-item" key={index}>
+        <div className="advisor-initials">{getInitials(advisor.name)}</div>
+        <div className="advisor-name">{advisor.name}</div>
+      </div>
+    ))}
+  </div>
+</div>
+
+
+
 
 
 .card-section {
