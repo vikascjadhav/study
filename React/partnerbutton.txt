@@ -1,3 +1,35 @@
+.partner-card {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px; /* ✅ Curved corners */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* ✅ Soft shadow */
+  padding: 20px;
+  margin: 16px 0;
+  box-sizing: border-box;
+}
+
+.partner-row {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 .client-advisors {
   display: flex;
   flex-wrap: wrap;
