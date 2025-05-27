@@ -1,0 +1,125 @@
+package com.example.validator;
+
+import com.example.config.ValidLAACPair;
+import com.example.config.AuthenticationProperties;
+import com.example.exception.LocationAwarenessException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class LAACValidator {
+
+    private final AuthenticationProperties authProps;
+
+    @Autowired
+    public LAACValidator(AuthenticationProperties authProps) {
+        this.authProps = authProps;
+    }
+
+    public void validate(String location, String channel) {
+        boolean match = authProps.getValidPairs().stream()
+                .anyMatch(pair ->
+                        pair.getLocation().equalsIgnoreCase(location)
+                        && pair.getChannel().equals(channel)
+                );
+
+        if (!match) {
+            throw new LocationAwarenessException("401 - Unauthorized. Location awareness check failed.");
+        }
+    }
+}
+
+
+
+
+authentication:
+  validPairs:
+    - location: IND
+      channel: 5
+    - location: USA
+      channel: 7
+    - location: UK
+      channel: 10
+
+
+
+package com.example.config;
+
+public class ValidLAACPair {
+    private String location;
+    private String channel;
+
+    // Getters and setters
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+}
+
+
+
+package com.example.config;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+@Component
+@ConfigurationProperties(prefix = "authentication")
+public class AuthenticationProperties {
+
+    private List<ValidLAACPair> validPairs;
+
+    public List<ValidLAACPair> getValidPairs() {
+        return validPairs;
+    }
+
+    public void setValidPairs(List<ValidLAACPair> validPairs) {
+        this.validPairs = validPairs;
+    }
+}
+
+
+
+package com.example.validator;
+
+import com.example.config.ValidLAACPair;
+import com.example.config.AuthenticationProperties;
+import com.example.exception.LocationAwarenessException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class LAACValidator {
+
+    private final AuthenticationProperties authProps;
+
+    @Autowired
+    public LAACValidator(AuthenticationProperties authProps) {
+        this.authProps = authProps;
+    }
+
+    public void validate(String location, String channel) {
+        boolean match = authProps.getValidPairs().stream()
+                .anyMatch(pair ->
+                        pair.getLocation().equalsIgnoreCase(location)
+                        && pair.getChannel().equals(channel)
+                );
+
+        if (!match) {
+            throw new LocationAwarenessException("401 - Unauthorized. Location awareness check failed.");
+        }
+    }
+}
