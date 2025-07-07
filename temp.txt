@@ -1,18 +1,39 @@
-import org.springframework.boot.actuate.health.Health;
-import org.springframework.boot.actuate.health.HealthIndicator;
-import org.springframework.stereotype.Component;
+import java.util.concurrent.ConcurrentHashMap;
 
-@Component
-public class KubernetesInfoHealthIndicator implements HealthIndicator {
+public class ContactService {
 
-    @Override
-    public Health health() {
-        String podName = System.getenv("HOSTNAME"); // default AKS/K8s pod name
-        String nodeName = System.getenv("NODE_NAME"); // if injected via downward API
+    private final ConcurrentHashMap<String, Object> locks = new ConcurrentHashMap<>();
 
-        return Health.up()
-                .withDetail("podName", podName)
-                .withDetail("nodeName", nodeName != null ? nodeName : "unknown")
-                .build();
+    public void processContact(String contactId) {
+        Object lock = locks.computeIfAbsent(contactId, key -> new Object());
+
+        try {
+            synchronized (lock) {
+                System.out.println("Processing contact: " + contactId + " by " + Thread.currentThread().getName());
+
+                try {
+                    Thread.sleep(1000); // Simulated work
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+
+                System.out.println("Finished contact: " + contactId + " by " + Thread.currentThread().getName());
+            }
+        } finally {
+            // Safe cleanup: only remove if it's the same lock object
+            locks.remove(contactId, lock);
+        }
+    }
+
+    public static void main(String[] args) {
+        ContactService service = new ContactService();
+
+        Runnable task1 = () -> service.processContact("C123");
+        Runnable task2 = () -> service.processContact("C123");
+        Runnable task3 = () -> service.processContact("C456");
+
+        new Thread(task1).start();
+        new Thread(task2).start();
+        new Thread(task3).start();
     }
 }
