@@ -1,27 +1,32 @@
-import java.util.concurrent.ConcurrentHashMap;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
+import java.util.concurrent.TimeUnit;
 
 public class ContactService {
 
-    private final ConcurrentHashMap<String, Object> locks = new ConcurrentHashMap<>();
+    // Guava Cache for lock objects, with eviction policy
+    private final Cache<String, Object> lockCache = CacheBuilder.newBuilder()
+            .expireAfterAccess(10, TimeUnit.MINUTES) // Evict if not accessed
+            .maximumSize(10_000)                     // Cap number of lock objects
+            .build();
 
     public void processContact(String contactId) {
-        Object lock = locks.computeIfAbsent(contactId, key -> new Object());
-
         try {
+            Object lock = lockCache.get(contactId, Object::new); // lazy-load lock
             synchronized (lock) {
                 System.out.println("Processing contact: " + contactId + " by " + Thread.currentThread().getName());
 
                 try {
-                    Thread.sleep(1000); // Simulated work
+                    Thread.sleep(1000); // simulate work
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
 
                 System.out.println("Finished contact: " + contactId + " by " + Thread.currentThread().getName());
             }
-        } finally {
-            // Safe cleanup: only remove if it's the same lock object
-            locks.remove(contactId, lock);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to acquire lock for contactId: " + contactId, e);
         }
     }
 
@@ -32,8 +37,8 @@ public class ContactService {
         Runnable task2 = () -> service.processContact("C123");
         Runnable task3 = () -> service.processContact("C456");
 
-        new Thread(task1).start();
-        new Thread(task2).start();
-        new Thread(task3).start();
+        new Thread(task1).start(); // Same contactId: should be serialized
+        new Thread(task2).start(); // Same contactId: should wait for task1
+        new Thread(task3).start(); // Different contactId: runs in parallel
     }
 }
