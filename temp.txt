@@ -1,19 +1,34 @@
-Certainly! Here's the revised and more comprehensive version of the feedback with your additions:
+Here’s a more structured and professionally rewritten version of the feedback based on the three requested categories:
 
 ---
 
-**Feedback for Navaneet:**
+### **What could Ankush continue doing?**
 
-Navaneet has consistently demonstrated strong ownership and excellence in delivery across multiple key initiatives. He successfully led the implementation of the **Topaz Order Manager adoption for Taiwan** and the **Digital Banking module for Phone Banking Authentication**, both of which were delivered with high quality and within committed timelines.
+* Continue taking ownership of critical projects and delivering with quality, as demonstrated in the successful delivery of the Approval Workflow Interface module.
+* Maintain the high level of client focus and responsiveness he has shown through L3 support and timely resolution of issues.
+* Keep leveraging his ability to quickly understand new domains and build strong relationships with cross-functional teams, including business users, ASR, and development teams across regions.
+* Continue mentoring and supporting team members and new joiners, fostering a collaborative and supportive team environment.
+* Sustain his calm and composed approach, even under pressure, which contributes to overall team stability.
 
-A significant achievement was his leadership in delivering the **regulatory Phone Banking Authenticator project**, ensuring compliance while managing delivery within tight deadlines. In addition, he successfully delivered the **Core Banking Adapter module**, a critical enabler for transitioning the Taiwan business from the legacy Order Manager to the **Topaz Global Order Manager**. This marked a major step forward in the organization’s modernization journey.
+---
 
-Navaneet has been highly agile, effectively managing and supporting numerous changes throughout the delivery lifecycle. His responsiveness and adaptability have been instrumental in aligning project execution with evolving business requirements.
+### **What could Ankush do more to have greater impact?**
 
-He has also been a **vocal and key contributor to technical design discussions** and has played a **critical role in shaping the modular strategy** for the **WMPC organization**. His contributions have helped ensure scalable, maintainable, and future-ready solutions aligned with strategic goals.
+* Deepen his understanding of UBS’s institutional knowledge, including products, stakeholders, and internal processes, to further align his work with strategic goals.
+* Enhance technical breadth by upskilling in cloud technologies and modern architecture practices relevant to UBS’s digital transformation initiatives.
+* Explore opportunities to develop leadership capabilities by enrolling in leadership or stakeholder management training programs.
+* Take a more active role in product and stakeholder discussions to further influence business outcomes and drive end-to-end ownership at a broader level.
 
-Business stakeholders, including the **Wealth Operating Office organization**, have expressed strong appreciation for the quality and timeliness of the deliveries he has led. His proactive collaboration and effective communication have strengthened stakeholder confidence and satisfaction.
+---
 
-In addition to his technical leadership, Navaneet has consistently mentored and guided team members on both functional and technical topics, fostering team growth and elevating overall delivery standards.
+### **How Ankush has demonstrated UBS Behaviors**
 
-Navaneet’s combination of deep technical expertise, strategic thinking, and commitment to delivery excellence make him a highly valued and impactful member of the team.
+* **Accountability with Integrity**: Ankush has taken full ownership of key deliverables such as the Approval Workflow Interface module and CRDS analysis. He ensures timely resolution of issues and demonstrates reliability in handling production support.
+* **Collaboration**: He has built a strong network with various business teams, ASR, and development teams across the APAC region. His willingness to guide new joiners and support peers reflects a team-first mindset.
+* **Innovation**: Ankush contributed to the automation of contact data migration from the legacy Avenue tool to the new modular contact management system, showcasing a proactive approach to improving existing processes.
+
+---
+
+**Overall Summary**: Ankush is performing very well, making significant contributions across multiple initiatives. With continued focus on learning and leadership development, he is well-positioned to grow further and make an even larger impact.
+
+Let me know if you'd like this tailored further for a formal performance review or presentation format.
