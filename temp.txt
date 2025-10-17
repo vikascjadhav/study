@@ -32,3 +32,28 @@ Here’s a more structured and professionally rewritten version of the feedback 
 **Overall Summary**: Ankush is performing very well, making significant contributions across multiple initiatives. With continued focus on learning and leadership development, he is well-positioned to grow further and make an even larger impact.
 
 Let me know if you'd like this tailored further for a formal performance review or presentation format.
+
+
+
+
+You're absolutely right — the original summary could be interpreted as areas for improvement rather than strengths to continue. Here's the revised section, clearly emphasizing that these are **Ankush’s strengths** and he should **continue doing them**:
+
+---
+
+### **What could Ankush continue doing?**
+
+Ankush has demonstrated several strong capabilities that have had a significant positive impact, and he should continue to build on these strengths:
+
+* **Strong ownership and delivery**: He has shown excellent ownership and accountability, particularly evident in the successful delivery of the Approval Workflow Interface module. This strength in driving projects to completion is a key asset.
+* **Client-centric mindset**: Ankush consistently puts client focus at the forefront, ensuring issues are addressed promptly and solutions are aligned with business needs.
+* **Quick learning and adaptability**: He quickly grasps new concepts and domains, allowing him to contribute meaningfully across both the OME and Digi pods.
+* **Cross-functional collaboration**: He has effectively built relationships with business teams, ASR, and development teams across APAC, fostering a collaborative environment.
+* **Supportive team player**: Ankush actively supports team members and new joiners, offering guidance and assistance, which helps strengthen team capability and cohesion.
+* **Calm under pressure**: Even in high-pressure situations, Ankush remains composed and solution-oriented, setting a positive example for the team.
+
+These are clear strengths, and Ankush is encouraged to continue demonstrating them consistently as he progresses in his role.
+
+---
+
+Let me know if you'd like to merge this into the full feedback summary.
+
