@@ -1,59 +1,25 @@
-Here’s a more structured and professionally rewritten version of the feedback based on the three requested categories:
+Here’s a refined version of that sentence — polished for professional tone and clarity, suitable for a **self-evaluation comment** or **performance review**:
 
 ---
 
-### **What could Ankush continue doing?**
-
-* Continue taking ownership of critical projects and delivering with quality, as demonstrated in the successful delivery of the Approval Workflow Interface module.
-* Maintain the high level of client focus and responsiveness he has shown through L3 support and timely resolution of issues.
-* Keep leveraging his ability to quickly understand new domains and build strong relationships with cross-functional teams, including business users, ASR, and development teams across regions.
-* Continue mentoring and supporting team members and new joiners, fostering a collaborative and supportive team environment.
-* Sustain his calm and composed approach, even under pressure, which contributes to overall team stability.
+> I **led the team in Q2** through a **very critical, time-sensitive, and high-pressure phase** to successfully deliver the **Topaz Global Order Manager for the Taiwan location**. Despite the challenges, I maintained team focus, ensured clear communication, and effectively managed priorities to achieve on-time delivery and meet business expectations.
 
 ---
 
-### **What could Ankush do more to have greater impact?**
-
-* Deepen his understanding of UBS’s institutional knowledge, including products, stakeholders, and internal processes, to further align his work with strategic goals.
-* Enhance technical breadth by upskilling in cloud technologies and modern architecture practices relevant to UBS’s digital transformation initiatives.
-* Explore opportunities to develop leadership capabilities by enrolling in leadership or stakeholder management training programs.
-* Take a more active role in product and stakeholder discussions to further influence business outcomes and drive end-to-end ownership at a broader level.
+If you’d like it integrated into your full **contribution comment** alongside the other project achievements, here’s how it would flow naturally:
 
 ---
 
-### **How Ankush has demonstrated UBS Behaviors**
+### **Contribution Comment (Revised)**
 
-* **Accountability with Integrity**: Ankush has taken full ownership of key deliverables such as the Approval Workflow Interface module and CRDS analysis. He ensures timely resolution of issues and demonstrates reliability in handling production support.
-* **Collaboration**: He has built a strong network with various business teams, ASR, and development teams across the APAC region. His willingness to guide new joiners and support peers reflects a team-first mindset.
-* **Innovation**: Ankush contributed to the automation of contact data migration from the legacy Avenue tool to the new modular contact management system, showcasing a proactive approach to improving existing processes.
-
----
-
-**Overall Summary**: Ankush is performing very well, making significant contributions across multiple initiatives. With continued focus on learning and leadership development, he is well-positioned to grow further and make an even larger impact.
-
-Let me know if you'd like this tailored further for a formal performance review or presentation format.
-
-
-
-
-You're absolutely right — the original summary could be interpreted as areas for improvement rather than strengths to continue. Here's the revised section, clearly emphasizing that these are **Ankush’s strengths** and he should **continue doing them**:
+> During this review period, I successfully **led multiple APAC SCC initiatives**, including the **Taiwan Order Manager**, **Digital Banking Phone Banking Authenticator**, and the **Topaz Global Order Manager for Taiwan** projects.
+>
+> In **Q2**, I **led the team through a very critical, time-sensitive, and high-pressure delivery period** for the **Topaz Global Order Manager for Taiwan**. Through strong coordination, prioritization, and stakeholder management, we achieved successful delivery on schedule, paving the way for the **decommissioning of the legacy COPS Order Manager platform**, resulting in **vendor cost savings** and **reduced operational risk**.
+>
+> Additionally, the **Phone Banking Authenticator** project enabled **Client Advisors to digitally authenticate clients**, ensuring **regulatory compliance** and providing a **digital audit trail** for order-taking processes.
+>
+> These initiatives collectively reflect strong **leadership under pressure**, **strategic execution**, and **commitment to SCC’s digital transformation and operational excellence goals**.
 
 ---
 
-### **What could Ankush continue doing?**
-
-Ankush has demonstrated several strong capabilities that have had a significant positive impact, and he should continue to build on these strengths:
-
-* **Strong ownership and delivery**: He has shown excellent ownership and accountability, particularly evident in the successful delivery of the Approval Workflow Interface module. This strength in driving projects to completion is a key asset.
-* **Client-centric mindset**: Ankush consistently puts client focus at the forefront, ensuring issues are addressed promptly and solutions are aligned with business needs.
-* **Quick learning and adaptability**: He quickly grasps new concepts and domains, allowing him to contribute meaningfully across both the OME and Digi pods.
-* **Cross-functional collaboration**: He has effectively built relationships with business teams, ASR, and development teams across APAC, fostering a collaborative environment.
-* **Supportive team player**: Ankush actively supports team members and new joiners, offering guidance and assistance, which helps strengthen team capability and cohesion.
-* **Calm under pressure**: Even in high-pressure situations, Ankush remains composed and solution-oriented, setting a positive example for the team.
-
-These are clear strengths, and Ankush is encouraged to continue demonstrating them consistently as he progresses in his role.
-
----
-
-Let me know if you'd like to merge this into the full feedback summary.
-
+Would you like me to make this version concise enough for direct entry into a self-evaluation form (around 150–200 words)?
