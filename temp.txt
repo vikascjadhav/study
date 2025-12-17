@@ -1,89 +1,126 @@
-# Re-create and save the fixed, stable Excel file again to ensure link availability
-
 from openpyxl import Workbook
 from openpyxl.worksheet.datavalidation import DataValidation
-from openpyxl.styles import PatternFill
-from openpyxl.formatting.rule import FormulaRule
 import random
 
-wb = Workbook()
-
-months = [
+# ---------------- CONFIG ----------------
+MAX_ROWS = 200  # supports up to 200 persons / categories / initiatives
+MONTHS = [
     "Jan-2026","Feb-2026","Mar-2026","Apr-2026","May-2026","Jun-2026",
     "Jul-2026","Aug-2026","Sep-2026","Oct-2026","Nov-2026","Dec-2026"
 ]
 
-resources = [f"Person{i}" for i in range(1, 21)]
+RESOURCES = [f"Person{i}" for i in range(1, 21)]
 
-# ---------------- Resource Capacity ----------------
-cap = wb.active
-cap.title = "Resource Capacity"
-cap.append(["Resource Name","Role","Monthly Capacity %"])
+# ---------------- WORKBOOK ----------------
+wb = Workbook()
 
-for r in resources:
-    cap.append([
-        r,
-        random.choice(["Developer","QA","Analyst"]),
-        round(random.uniform(0.7, 1.0), 2)
-    ])
+# =====================================================
+# 1. RESOURCE ALLOCATION (INPUT SHEET)
+# =====================================================
+alloc = wb.active
+alloc.title = "Resource Allocation"
 
-dv_cap = DataValidation(type="decimal", operator="between", formula1=0, formula2=1)
-cap.add_data_validation(dv_cap)
-dv_cap.add("C2:C1000")
+alloc.append([
+    "Resource Name",
+    "Category",
+    "Initiative",
+    "Project",
+    "Module"
+] + MONTHS)
 
-# ---------------- Resource Allocation ----------------
-alloc = wb.create_sheet("Resource Allocation")
-alloc.append(["Resource Name","Category","Initiative","Project Name","Module Name"] + months)
-
-categories = ["SD", "RTB", "KTLO"]
-initiatives = ["Digital Transformation", "Regulatory Compliance", "Cloud Migration"]
-projects = ["Project A", "Project B", "Project C"]
-modules = ["Core", "API", "UI", "Reporting"]
-
-for r in resources:
+for r in RESOURCES:
     split = random.choice([(0.6,0.4),(0.7,0.3),(0.5,0.5)])
     alloc.append([r,"SD","Digital Transformation","Project A","Core"] + [split[0]]*12)
     alloc.append([r,"RTB","Cloud Migration","Project B","API"] + [split[1]]*12)
 
-dv_alloc = DataValidation(type="decimal", operator="between", formula1=0, formula2=1)
+# Allocation validation (0–1)
+dv_alloc = DataValidation(
+    type="decimal",
+    operator="between",
+    formula1=0,
+    formula2=1
+)
 alloc.add_data_validation(dv_alloc)
-dv_alloc.add("F2:Q10000")
+dv_alloc.add(f"F2:Q{MAX_ROWS}")
 
-# ---------------- Person Monthly View ----------------
-pmv = wb.create_sheet("Person Monthly View")
-pmv.append(["Resource Name"] + months)
+# =====================================================
+# HELPER FUNCTION TO CREATE SUMMARY SHEETS
+# =====================================================
+def create_summary_sheet(sheet_name, key_col, title):
+    sh = wb.create_sheet(sheet_name)
+    sh.append([title] + MONTHS)
 
-for idx, r in enumerate(resources, start=2):
-    pmv[f"A{idx}"] = r
-    for m_idx, col in enumerate(range(6,18), start=2):
-        col_letter = chr(64 + col)
-        pmv.cell(row=idx, column=m_idx).value = (
-            f"=SUMIF('Resource Allocation'!$A:$A,$A{idx},'Resource Allocation'!${col_letter}:${col_letter})"
-        )
+    # Preallocate rows
+    for row in range(2, MAX_ROWS + 1):
+        sh[f"A{row}"] = ""
 
-# ---------------- Conditional Formatting ----------------
-red_fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type="solid")
-green_fill = PatternFill(start_color="C6EFCE", end_color="C6EFCE", fill_type="solid")
+    # Safe SUMIF formulas (Excel-stable)
+    for row in range(2, MAX_ROWS + 1):
+        for m_idx, col in enumerate(range(6, 18), start=2):
+            col_letter = chr(64 + col)
+            sh.cell(row=row, column=m_idx).value = (
+                f'=IF($A{row}="","",'
+                f'SUMIF('
+                f"'Resource Allocation'!${key_col}:${key_col},"
+                f'$A{row},'
+                f"'Resource Allocation'!${col_letter}:${col_letter}))"
+            )
 
-for col_idx in range(2, 14):
-    col_letter = chr(64 + col_idx)
-    under_rule = FormulaRule(
-        formula=[
-            f"{col_letter}2<IFERROR(VLOOKUP($A2,'Resource Capacity'!$A:$C,3,FALSE),1)"
-        ],
-        fill=red_fill
-    )
-    ok_rule = FormulaRule(
-        formula=[
-            f"{col_letter}2>=IFERROR(VLOOKUP($A2,'Resource Capacity'!$A:$C,3,FALSE),1)"
-        ],
-        fill=green_fill
-    )
-    pmv.conditional_formatting.add(f"{col_letter}2:{col_letter}1000", under_rule)
-    pmv.conditional_formatting.add(f"{col_letter}2:{col_letter}1000", ok_rule)
+# =====================================================
+# 2. PERSON MONTHLY VIEW
+# =====================================================
+create_summary_sheet(
+    sheet_name="Person Monthly View",
+    key_col="A",
+    title="Resource Name"
+)
 
-# Save again
-path = "/mnt/data/Fixed_Stable_Resource_Planning_With_Capacity_2026.xlsx"
-wb.save(path)
+# =====================================================
+# 3. CATEGORY MONTHLY VIEW
+# =====================================================
+create_summary_sheet(
+    sheet_name="Category Monthly View",
+    key_col="B",
+    title="Category"
+)
 
-path
+# =====================================================
+# 4. INITIATIVE MONTHLY VIEW
+# =====================================================
+create_summary_sheet(
+    sheet_name="Initiative Monthly View",
+    key_col="C",
+    title="Initiative"
+)
+
+# =====================================================
+# 5. MODULE MONTHLY VIEW
+# =====================================================
+create_summary_sheet(
+    sheet_name="Module Monthly View",
+    key_col="E",
+    title="Module"
+)
+
+# =====================================================
+# 6. HOW TO USE
+# =====================================================
+info = wb.create_sheet("HOW TO USE")
+info["A1"] = "SHEET-BASED, EXCEL-SAFE RESOURCE PLANNING MODEL"
+info["A3"] = (
+    "HOW TO ADD A NEW PERSON (e.g., Person21):\n"
+    "1. Go to 'Person Monthly View'\n"
+    "2. Type Person21 in the next empty row in column A\n"
+    "3. Add allocation rows for Person21 in 'Resource Allocation'\n\n"
+    "No formulas need to be copied.\n"
+    "No Excel repair warnings will occur.\n\n"
+    "This design intentionally avoids dynamic arrays and volatile formulas."
+)
+
+# =====================================================
+# SAVE FILE
+# =====================================================
+output_file = "SheetBased_Stable_Resource_Planning_2026.xlsx"
+wb.save(output_file)
+
+print(f"Excel file generated: {output_file}")
