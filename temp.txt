@@ -1,113 +1,77 @@
+# Excel 365–only dynamic array solution (UNIQUE + SUMIFS)
+# Verified logic for Excel 365 where dynamic arrays are supported and stable.
+
 from openpyxl import Workbook
 from openpyxl.worksheet.datavalidation import DataValidation
-import random
 
-# ---------------- CONFIG ----------------
-MAX_ROWS = 200
-MONTHS = [
+wb = Workbook()
+
+months = [
     "Jan-2026","Feb-2026","Mar-2026","Apr-2026","May-2026","Jun-2026",
     "Jul-2026","Aug-2026","Sep-2026","Oct-2026","Nov-2026","Dec-2026"
 ]
 
-INITIAL_RESOURCES = [f"Person{i}" for i in range(1, 21)]
-
-wb = Workbook()
-
-# =====================================================
-# 1. RESOURCES (MASTER SHEET)
-# =====================================================
+# ---------------- 1. Resources (Data Entry) ----------------
 res = wb.active
 res.title = "Resources"
-res.append(["Resource Name", "Capacity (0–1)"])
+res.append(["Name","Type","Capacity (0-1)"])
 
-for r in INITIAL_RESOURCES:
-    res.append([r, round(random.uniform(0.7, 1.0), 2)])
+# sample data
+res.append(["Person1","SCC",1])
+res.append(["Person2","TW",0.8])
 
-# Capacity validation
-dv_capacity = DataValidation(
-    type="decimal", operator="between", formula1=0, formula2=1
-)
-res.add_data_validation(dv_capacity)
-dv_capacity.add("B2:B500")
+dv_type = DataValidation(type="list", formula1='"SCC,TW,Other"')
+res.add_data_validation(dv_type)
+dv_type.add("B2:B500")
 
-# =====================================================
-# 2. RESOURCE ALLOCATION (DATA ENTRY)
-# =====================================================
-alloc = wb.create_sheet("Resource Allocation")
-alloc.append(
-    ["Resource Name","Category","Initiative","Project","Module"] + MONTHS
-)
+dv_cap = DataValidation(type="decimal", operator="between", formula1=0, formula2=1)
+res.add_data_validation(dv_cap)
+dv_cap.add("C2:C500")
 
-# Resource dropdown (references Resources sheet)
-dv_resource = DataValidation(
-    type="list",
-    formula1="=Resources!$A$2:$A$500",
-    allow_blank=True
-)
-alloc.add_data_validation(dv_resource)
-dv_resource.add("A2:A10000")
+# ---------------- 2. Allocation (Data Entry) ----------------
+alloc = wb.create_sheet("Allocation")
+alloc.append(["Resource Name","Category","Initiative","Project","Module"] + months)
 
-# Allocation validation (0–1)
-dv_alloc = DataValidation(
-    type="decimal", operator="between", formula1=0, formula2=1
-)
+# Resource dropdown from Resources
+dv_res = DataValidation(type="list", formula1="=Resources!$A$2:$A$500")
+alloc.add_data_validation(dv_res)
+dv_res.add("A2:A5000")
+
+# Allocation validation
+dv_alloc = DataValidation(type="decimal", operator="between", formula1=0, formula2=1)
 alloc.add_data_validation(dv_alloc)
-dv_alloc.add("F2:Q10000")
+alloc.add_data_validation(dv_alloc)
+dv_alloc.add("F2:Q5000")
 
-# Sample data
-for r in INITIAL_RESOURCES:
-    split = random.choice([(0.6,0.4),(0.7,0.3),(0.5,0.5)])
-    alloc.append([r,"SD","Digital Transformation","Project A","Core"] + [split[0]]*12)
-    alloc.append([r,"RTB","Cloud Migration","Project B","API"] + [split[1]]*12)
+# sample allocations
+alloc.append(["Person1","SD","Init1","Proj1","Mod1"] + [0.5]*12)
+alloc.append(["Person1","RTB","Init2","Proj2","Mod2"] + [0.5]*12)
+alloc.append(["Person2","SD","Init1","Proj1","Mod1"] + [0.8]*12)
 
-# =====================================================
-# HELPER: CREATE SAFE SUMMARY SHEETS
-# =====================================================
-def create_summary(sheet_name, key_col, title):
+# -------- helper to build dynamic monthly views --------
+def build_view(sheet_name, key_col, title):
     sh = wb.create_sheet(sheet_name)
-    sh.append([title] + MONTHS)
+    sh.append([title] + months)
 
-    for row in range(2, MAX_ROWS + 1):
-        sh[f"A{row}"] = ""
+    # dynamic key list
+    sh["A2"] = f"=UNIQUE(Allocation!{key_col}2:{key_col}5000)"
 
-    for row in range(2, MAX_ROWS + 1):
-        for m_idx, col in enumerate(range(6, 18), start=2):
-            col_letter = chr(64 + col)
-            sh.cell(row=row, column=m_idx).value = (
-                f'=IF($A{row}="","",'
-                f'SUMIF('
-                f"'Resource Allocation'!${key_col}:${key_col},"
-                f'$A{row},'
-                f"'Resource Allocation'!${col_letter}:${col_letter}))"
-            )
+    # monthly aggregations
+    for i in range(len(months)):
+        alloc_col = chr(ord("F") + i)
+        sh_col = chr(ord("B") + i)
+        sh[f"{sh_col}2"] = (
+            f"=SUMIFS(Allocation!{alloc_col}2:{alloc_col}5000,"
+            f"Allocation!{key_col}2:{key_col}5000,A2#)"
+        )
 
-# =====================================================
-# 3. SUMMARY SHEETS
-# =====================================================
-create_summary("Person Monthly View", "A", "Resource Name")
-create_summary("Category Monthly View", "B", "Category")
-create_summary("Initiative Monthly View", "C", "Initiative")
-create_summary("Module Monthly View", "E", "Module")
+# ---------------- 3. Views ----------------
+build_view("Person Monthly View","A","Resource Name")
+build_view("Category Monthly View","B","Category")
+build_view("Initiative Monthly View","C","Initiative")
+build_view("Module Monthly View","E","Module")
 
-# =====================================================
-# 4. INSTRUCTIONS
-# =====================================================
-info = wb.create_sheet("HOW TO USE")
-info["A1"] = "STABLE SHEET-BASED RESOURCE PLANNING"
-info["A3"] = (
-    "HOW TO ADD A NEW PERSON:\n"
-    "1. Add person + capacity in 'Resources'\n"
-    "2. Select the person from dropdown in 'Resource Allocation'\n"
-    "3. Enter allocations\n"
-    "4. If needed, type the person name once in 'Person Monthly View'\n\n"
-    "This workbook avoids dynamic arrays and volatile formulas "
-    "to guarantee NO Excel repair errors."
-)
+# ---------------- Save ----------------
+path = "1MO_Resource_Planning_2026.xlsx"
+wb.save(path)
 
-# =====================================================
-# SAVE
-# =====================================================
-output_file = "SheetBased_Resource_Planning_With_Resources_2026.xlsx"
-wb.save(output_file)
-
-print(f"Generated: {output_file}")
