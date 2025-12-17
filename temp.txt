@@ -3,58 +3,73 @@ from openpyxl.worksheet.datavalidation import DataValidation
 import random
 
 # ---------------- CONFIG ----------------
-MAX_ROWS = 200  # supports up to 200 persons / categories / initiatives
+MAX_ROWS = 200
 MONTHS = [
     "Jan-2026","Feb-2026","Mar-2026","Apr-2026","May-2026","Jun-2026",
     "Jul-2026","Aug-2026","Sep-2026","Oct-2026","Nov-2026","Dec-2026"
 ]
 
-RESOURCES = [f"Person{i}" for i in range(1, 21)]
+INITIAL_RESOURCES = [f"Person{i}" for i in range(1, 21)]
 
-# ---------------- WORKBOOK ----------------
 wb = Workbook()
 
 # =====================================================
-# 1. RESOURCE ALLOCATION (INPUT SHEET)
+# 1. RESOURCES (MASTER SHEET)
 # =====================================================
-alloc = wb.active
-alloc.title = "Resource Allocation"
+res = wb.active
+res.title = "Resources"
+res.append(["Resource Name", "Capacity (0–1)"])
 
-alloc.append([
-    "Resource Name",
-    "Category",
-    "Initiative",
-    "Project",
-    "Module"
-] + MONTHS)
+for r in INITIAL_RESOURCES:
+    res.append([r, round(random.uniform(0.7, 1.0), 2)])
 
-for r in RESOURCES:
+# Capacity validation
+dv_capacity = DataValidation(
+    type="decimal", operator="between", formula1=0, formula2=1
+)
+res.add_data_validation(dv_capacity)
+dv_capacity.add("B2:B500")
+
+# =====================================================
+# 2. RESOURCE ALLOCATION (DATA ENTRY)
+# =====================================================
+alloc = wb.create_sheet("Resource Allocation")
+alloc.append(
+    ["Resource Name","Category","Initiative","Project","Module"] + MONTHS
+)
+
+# Resource dropdown (references Resources sheet)
+dv_resource = DataValidation(
+    type="list",
+    formula1="=Resources!$A$2:$A$500",
+    allow_blank=True
+)
+alloc.add_data_validation(dv_resource)
+dv_resource.add("A2:A10000")
+
+# Allocation validation (0–1)
+dv_alloc = DataValidation(
+    type="decimal", operator="between", formula1=0, formula2=1
+)
+alloc.add_data_validation(dv_alloc)
+dv_alloc.add("F2:Q10000")
+
+# Sample data
+for r in INITIAL_RESOURCES:
     split = random.choice([(0.6,0.4),(0.7,0.3),(0.5,0.5)])
     alloc.append([r,"SD","Digital Transformation","Project A","Core"] + [split[0]]*12)
     alloc.append([r,"RTB","Cloud Migration","Project B","API"] + [split[1]]*12)
 
-# Allocation validation (0–1)
-dv_alloc = DataValidation(
-    type="decimal",
-    operator="between",
-    formula1=0,
-    formula2=1
-)
-alloc.add_data_validation(dv_alloc)
-dv_alloc.add(f"F2:Q{MAX_ROWS}")
-
 # =====================================================
-# HELPER FUNCTION TO CREATE SUMMARY SHEETS
+# HELPER: CREATE SAFE SUMMARY SHEETS
 # =====================================================
-def create_summary_sheet(sheet_name, key_col, title):
+def create_summary(sheet_name, key_col, title):
     sh = wb.create_sheet(sheet_name)
     sh.append([title] + MONTHS)
 
-    # Preallocate rows
     for row in range(2, MAX_ROWS + 1):
         sh[f"A{row}"] = ""
 
-    # Safe SUMIF formulas (Excel-stable)
     for row in range(2, MAX_ROWS + 1):
         for m_idx, col in enumerate(range(6, 18), start=2):
             col_letter = chr(64 + col)
@@ -67,60 +82,32 @@ def create_summary_sheet(sheet_name, key_col, title):
             )
 
 # =====================================================
-# 2. PERSON MONTHLY VIEW
+# 3. SUMMARY SHEETS
 # =====================================================
-create_summary_sheet(
-    sheet_name="Person Monthly View",
-    key_col="A",
-    title="Resource Name"
-)
+create_summary("Person Monthly View", "A", "Resource Name")
+create_summary("Category Monthly View", "B", "Category")
+create_summary("Initiative Monthly View", "C", "Initiative")
+create_summary("Module Monthly View", "E", "Module")
 
 # =====================================================
-# 3. CATEGORY MONTHLY VIEW
-# =====================================================
-create_summary_sheet(
-    sheet_name="Category Monthly View",
-    key_col="B",
-    title="Category"
-)
-
-# =====================================================
-# 4. INITIATIVE MONTHLY VIEW
-# =====================================================
-create_summary_sheet(
-    sheet_name="Initiative Monthly View",
-    key_col="C",
-    title="Initiative"
-)
-
-# =====================================================
-# 5. MODULE MONTHLY VIEW
-# =====================================================
-create_summary_sheet(
-    sheet_name="Module Monthly View",
-    key_col="E",
-    title="Module"
-)
-
-# =====================================================
-# 6. HOW TO USE
+# 4. INSTRUCTIONS
 # =====================================================
 info = wb.create_sheet("HOW TO USE")
-info["A1"] = "SHEET-BASED, EXCEL-SAFE RESOURCE PLANNING MODEL"
+info["A1"] = "STABLE SHEET-BASED RESOURCE PLANNING"
 info["A3"] = (
-    "HOW TO ADD A NEW PERSON (e.g., Person21):\n"
-    "1. Go to 'Person Monthly View'\n"
-    "2. Type Person21 in the next empty row in column A\n"
-    "3. Add allocation rows for Person21 in 'Resource Allocation'\n\n"
-    "No formulas need to be copied.\n"
-    "No Excel repair warnings will occur.\n\n"
-    "This design intentionally avoids dynamic arrays and volatile formulas."
+    "HOW TO ADD A NEW PERSON:\n"
+    "1. Add person + capacity in 'Resources'\n"
+    "2. Select the person from dropdown in 'Resource Allocation'\n"
+    "3. Enter allocations\n"
+    "4. If needed, type the person name once in 'Person Monthly View'\n\n"
+    "This workbook avoids dynamic arrays and volatile formulas "
+    "to guarantee NO Excel repair errors."
 )
 
 # =====================================================
-# SAVE FILE
+# SAVE
 # =====================================================
-output_file = "SheetBased_Stable_Resource_Planning_2026.xlsx"
+output_file = "SheetBased_Resource_Planning_With_Resources_2026.xlsx"
 wb.save(output_file)
 
-print(f"Excel file generated: {output_file}")
+print(f"Generated: {output_file}")
