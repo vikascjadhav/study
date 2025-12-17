@@ -1,25 +1,89 @@
-Here’s a refined version of that sentence — polished for professional tone and clarity, suitable for a **self-evaluation comment** or **performance review**:
+# Re-create and save the fixed, stable Excel file again to ensure link availability
 
----
+from openpyxl import Workbook
+from openpyxl.worksheet.datavalidation import DataValidation
+from openpyxl.styles import PatternFill
+from openpyxl.formatting.rule import FormulaRule
+import random
 
-> I **led the team in Q2** through a **very critical, time-sensitive, and high-pressure phase** to successfully deliver the **Topaz Global Order Manager for the Taiwan location**. Despite the challenges, I maintained team focus, ensured clear communication, and effectively managed priorities to achieve on-time delivery and meet business expectations.
+wb = Workbook()
 
----
+months = [
+    "Jan-2026","Feb-2026","Mar-2026","Apr-2026","May-2026","Jun-2026",
+    "Jul-2026","Aug-2026","Sep-2026","Oct-2026","Nov-2026","Dec-2026"
+]
 
-If you’d like it integrated into your full **contribution comment** alongside the other project achievements, here’s how it would flow naturally:
+resources = [f"Person{i}" for i in range(1, 21)]
 
----
+# ---------------- Resource Capacity ----------------
+cap = wb.active
+cap.title = "Resource Capacity"
+cap.append(["Resource Name","Role","Monthly Capacity %"])
 
-### **Contribution Comment (Revised)**
+for r in resources:
+    cap.append([
+        r,
+        random.choice(["Developer","QA","Analyst"]),
+        round(random.uniform(0.7, 1.0), 2)
+    ])
 
-> During this review period, I successfully **led multiple APAC SCC initiatives**, including the **Taiwan Order Manager**, **Digital Banking Phone Banking Authenticator**, and the **Topaz Global Order Manager for Taiwan** projects.
->
-> In **Q2**, I **led the team through a very critical, time-sensitive, and high-pressure delivery period** for the **Topaz Global Order Manager for Taiwan**. Through strong coordination, prioritization, and stakeholder management, we achieved successful delivery on schedule, paving the way for the **decommissioning of the legacy COPS Order Manager platform**, resulting in **vendor cost savings** and **reduced operational risk**.
->
-> Additionally, the **Phone Banking Authenticator** project enabled **Client Advisors to digitally authenticate clients**, ensuring **regulatory compliance** and providing a **digital audit trail** for order-taking processes.
->
-> These initiatives collectively reflect strong **leadership under pressure**, **strategic execution**, and **commitment to SCC’s digital transformation and operational excellence goals**.
+dv_cap = DataValidation(type="decimal", operator="between", formula1=0, formula2=1)
+cap.add_data_validation(dv_cap)
+dv_cap.add("C2:C1000")
 
----
+# ---------------- Resource Allocation ----------------
+alloc = wb.create_sheet("Resource Allocation")
+alloc.append(["Resource Name","Category","Initiative","Project Name","Module Name"] + months)
 
-Would you like me to make this version concise enough for direct entry into a self-evaluation form (around 150–200 words)?
+categories = ["SD", "RTB", "KTLO"]
+initiatives = ["Digital Transformation", "Regulatory Compliance", "Cloud Migration"]
+projects = ["Project A", "Project B", "Project C"]
+modules = ["Core", "API", "UI", "Reporting"]
+
+for r in resources:
+    split = random.choice([(0.6,0.4),(0.7,0.3),(0.5,0.5)])
+    alloc.append([r,"SD","Digital Transformation","Project A","Core"] + [split[0]]*12)
+    alloc.append([r,"RTB","Cloud Migration","Project B","API"] + [split[1]]*12)
+
+dv_alloc = DataValidation(type="decimal", operator="between", formula1=0, formula2=1)
+alloc.add_data_validation(dv_alloc)
+dv_alloc.add("F2:Q10000")
+
+# ---------------- Person Monthly View ----------------
+pmv = wb.create_sheet("Person Monthly View")
+pmv.append(["Resource Name"] + months)
+
+for idx, r in enumerate(resources, start=2):
+    pmv[f"A{idx}"] = r
+    for m_idx, col in enumerate(range(6,18), start=2):
+        col_letter = chr(64 + col)
+        pmv.cell(row=idx, column=m_idx).value = (
+            f"=SUMIF('Resource Allocation'!$A:$A,$A{idx},'Resource Allocation'!${col_letter}:${col_letter})"
+        )
+
+# ---------------- Conditional Formatting ----------------
+red_fill = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type="solid")
+green_fill = PatternFill(start_color="C6EFCE", end_color="C6EFCE", fill_type="solid")
+
+for col_idx in range(2, 14):
+    col_letter = chr(64 + col_idx)
+    under_rule = FormulaRule(
+        formula=[
+            f"{col_letter}2<IFERROR(VLOOKUP($A2,'Resource Capacity'!$A:$C,3,FALSE),1)"
+        ],
+        fill=red_fill
+    )
+    ok_rule = FormulaRule(
+        formula=[
+            f"{col_letter}2>=IFERROR(VLOOKUP($A2,'Resource Capacity'!$A:$C,3,FALSE),1)"
+        ],
+        fill=green_fill
+    )
+    pmv.conditional_formatting.add(f"{col_letter}2:{col_letter}1000", under_rule)
+    pmv.conditional_formatting.add(f"{col_letter}2:{col_letter}1000", ok_rule)
+
+# Save again
+path = "/mnt/data/Fixed_Stable_Resource_Planning_With_Capacity_2026.xlsx"
+wb.save(path)
+
+path
