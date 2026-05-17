@@ -1,1 +1,37 @@
+## CROP System — Brief Summary
 
+**CROP (Client Report Ordering Platform)** is a batch-orchestration and scheduling system built for **Japan Wealth Management**, designed to automate periodic generation of three document types — **Account Statements, Balance Certificates, and Performance Reports** — for two legal entities: a **Bank entity** and a **JV (Securities) entity**.
+
+---
+
+**Core Workflow**
+
+CROP identifies active portfolios, resolves the applicable schedule or delivery frequency, requests data payloads from CRDS, and triggers document generation via OMOS. Final documents are released to clients through print, e-document, or archive channels.
+
+---
+
+**Key Dependent Systems**
+
+| System | Role |
+|---|---|
+| **CRDS** | Provides data payloads for document generation |
+| **LIPL** | Provides delivery instructions — frequency, address, language, currency |
+| **PCM-DC** | Distributes client static data and portfolio list (sourced from CRM) |
+| **OMOS** | Generates PDF documents and manages release workflow |
+| **GSM** | Data warehouse feeding positions, balances, transactions, and prices into CRDS |
+
+---
+
+**Critical Complexity — JV Price Dependency**
+
+Unlike the Bank entity, JV document generation is **gated on price availability**. Structured bonds and funds receive month-end prices manually uploaded by Operations via GSM. Portfolios with missing prices are **skipped** in batch runs until prices are resolved. CROP provides an **instrument price review screen** allowing Operations to accept older prices as month-end prices, with full audit capture (user, timestamp, action).
+
+---
+
+**Additional Capabilities**
+
+- Month-end portfolio readiness screen for Operations review
+- Ad-hoc document generation (price checks bypassed)
+- Re-trigger and regeneration of documents
+- Scheduling configuration per document type
+- Runs on ME+1, ME+2, ME+3, ME+4 batch cycles
