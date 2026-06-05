@@ -1,4 +1,525 @@
-I need detailed guidance on system that I have been developing which interacts with other systems I will provide a quick walk through off what system does and propose of system and the main system that we are talking about each client report, ordering platform crop, which I have been trying to build this particular system depends on few other systems such as client reportIng data services crds , Local # integration, provision layer LIPL, CRM system, output management Orchestra system omos . These are some of the system which are involved in this context. I’ll explain or all goal of the initiative here is to generate periodic month and statements for wealth management, clients and Print. Those statements using printer or send it to the system called as client edocuments. CRM system will provide me client static information around list of the portfolios for which statements ; balance certificate and performance report need to be generated. role of lipl to provide delivery instructions information, which is nothing but frequency of statement delivery, address for the portfolio, language, and currency. Role of CRDS system is to provide pay load for generating account statements, balance certificate, performance reports. Pay load will contain relevant information needed to generator document. Role of crop system is to define schedule for balance certificates and load delivery instruction frequency for account statements and performance reports. Generally, this frequencies at month but there are certain type of portfolio where frequency can be defined in the crop system. Crop system role is to look look at all the portfolios that are available and look at subset of portfolios which are active. Next it would need to look at schedule or frequency for a particular document that need to be generated and document type should be account statements, balance certificate and performance reports based on the schedule defined by the user or coming from the LIPL delivery instructions. Crop system will run a batch process to request pay load to the CRDS for all the active portfolios. once pay information is available, then we need to trigger request with portfolio and its pay load to the OMOS system, which will intern generate PDF document and will display to the user for review. Subsequently, user can release the document to the client using define channel it could be client E document or printer or UBS archive.
-Now this process is so far defined for Japan wealth management business, which has a two legal entities, bank entity and security. JV entity. For generating statements for bank in entity there is no dependency for prices to be available. now crop has to run periodic bates for month and process automation on month end +1, month end +2, month and +3 and month and +4 generally, we expect most of the portfolios who are active or Print account statement, balance certificate and performance report based on the applicability and availability of the data now process on JV side is little bit complex? There are certain types of instrument where we received daily price information feed from GSM to CRD system, but there are certain instrument such as structured bonds and funds for which we have prices available at the month. End and operations. Need to upload those prices once they receive this prices into the GSM file upload process those prices once uploaded will feed to the CRDS. On jV side, we need to look at. We need to look at a process where if I have a portfolio. for which there are instrument for which prices are still not available then on month end  plus one or any subsequent month and plus days those portfolios will be skipped in the printing process or document generation process for GV side. We are planning to give a screen to the operations user to review instrument, price details, showing latest prize and providing a calculation for month end price based on the date for which price is available and let’s see if price date is older than month and prize, then user will have ability to accept older price as my month and price and once you accept that price, then we expect that subsequent bat would pick up that price as a month and prize and process document generation. As per that now we will have a screen called as month and portfolio read in a screen where user will be able to login and see if particular portfolio is ready for statement generation/document generation or not, and once user clicks on the portfolio row at a certain place, then we are planning to show all the instruments which are tagged to this portfolio. That means having the position on that instrument for this particular portfolio and price information for those portfolio, it would be prize and as of date of the price user can use this screen for having review of the porthole for month end, this all is supposed to happen in crop again. Just to clarify above mentioned instrument price screen in the crop would also have audit capturing capability if user has accepted and who has accepted it, and at what time as mentioned earlier, this is a periodic schedule process for the month end, but we expect users to to generate a report on Adobe basis for all of these document types account statement, balance certificate and performance report. So we expect crop to support that via this regular processes but only key thing here could be if user is running adhoc report, then we would not look at price availability checks. GSM role is act as a data warehouse system which will feed positions, balances, transactions, information, and price information to CRDS . In the crop, we expect some of the features such retrigger  of the document regenerate of the document scheduling of the reports based on the report type sorry document type, which is account statement, balance and report
+# GitLab Epic MCP (TypeScript Only)
 
-Now I would like you to act as a very very expert in the system, architecture design and draw out system architecture along with the interaction and purpose of those interaction with those systems and first thing you should do is do a deep dive critic of this particular and highlight me if there is any gap as well as tell me what all architectural decisions record should be maintained when we are designing system like this ask me any clarifying questions if you need more information, jot down these things
+## Goal
+
+Extend `@zereight/mcp-gitlab` with a **small custom MCP server** that adds only:
+
+- `create_epic`
+- `get_epic`
+
+This design works with **GitLab CE/Open Source** using a **virtual epic model**.
+
+Instead of native GitLab Premium Epics:
+
+```text
+GitLab Premium:
+Epic (native object)
+```
+
+We implement:
+
+```text
+GitLab CE/Open Source:
+Epic -> GitLab Issue(label=epic)
+```
+
+Example:
+
+```text
+[EPIC] Client Authentication
+label: epic
+```
+
+---
+
+# High Level Architecture
+
+```text
+AI Agent / MCP Client
+        |
+        | tool call
+        v
++---------------------------+
+|  @zereight/mcp-gitlab     |
+|  Existing GitLab tools    |
+|  (issues, labels, MR)     |
++---------------------------+
+        |
+        +----------------------+
+                               |
+                               v
++----------------------------------------------+
+| Custom MCP: gitlab-epic-mcp                  |
+|                                              |
+| create_epic()                                |
+| get_epic()                                   |
++----------------------------------------------+
+                 |
+                 v
++----------------------------------------------+
+| GitLab REST API (@gitbeaker/rest)            |
++----------------------------------------------+
+```
+
+---
+
+# Recommended Folder Structure
+
+Keep the structure intentionally small.
+
+```text
+gitlab-epic-mcp/
+|
+|-- package.json
+|-- tsconfig.json
+|-- README.md
+|
+|-- src/
+|   |
+|   |-- index.ts
+|   |
+|   |-- config/
+|   |   |-- env.ts
+|   |
+|   |-- clients/
+|   |   |-- gitlabClient.ts
+|   |
+|   |-- schemas/
+|   |   |-- epic.schema.ts
+|   |
+|   |-- tools/
+|   |   |
+|   |   |-- createEpic.ts
+|   |   |-- getEpic.ts
+|   |
+|   |-- services/
+|   |   |-- epicService.ts
+|   |
+|   |-- utils/
+|       |-- markdown.ts
+|
+|-- dist/
+```
+
+---
+
+# Layer Responsibilities
+
+## 1. index.ts
+
+Purpose:
+
+MCP entry point.
+
+Responsibilities:
+
+- start MCP server
+- register tools
+- route tool requests
+
+Registered tools:
+
+```ts
+create_epic
+get_epic
+```
+
+Mental model:
+
+```ts
+const tools = {
+  create_epic,
+  get_epic
+};
+```
+
+This acts as the MCP router/controller.
+
+---
+
+## 2. config/env.ts
+
+Purpose:
+
+Centralized environment validation.
+
+Example:
+
+```ts
+export const env = {
+  gitlabUrl: process.env.GITLAB_URL!,
+  gitlabToken: process.env.GITLAB_TOKEN!
+};
+```
+
+Benefits:
+
+- single source of truth
+- avoids repeated env lookups
+- easier testing
+
+---
+
+## 3. clients/gitlabClient.ts
+
+Purpose:
+
+Reusable GitLab API client.
+
+Example:
+
+```ts
+import { Gitlab } from "@gitbeaker/rest";
+
+export const gitlab = new Gitlab({
+  host: process.env.GITLAB_URL,
+  token: process.env.GITLAB_TOKEN
+});
+```
+
+Why?
+
+Avoids this anti-pattern:
+
+```ts
+new Gitlab(...)
+new Gitlab(...)
+new Gitlab(...)
+```
+
+Instead:
+
+```text
+single shared client
+```
+
+---
+
+## 4. schemas/epic.schema.ts
+
+Purpose:
+
+Validate MCP tool input.
+
+Use `zod`.
+
+Example:
+
+```ts
+import { z } from "zod";
+
+export const createEpicSchema = z.object({
+  projectId: z.number(),
+  title: z.string(),
+  description: z.string().optional()
+});
+```
+
+Benefits:
+
+- prevents bad requests
+- runtime validation
+- type safety
+
+---
+
+## 5. tools/
+
+Purpose:
+
+Expose MCP tools to the AI agent.
+
+These are thin wrappers.
+
+Responsibilities:
+
+- receive MCP request
+- validate input
+- call service layer
+- return formatted response
+
+Should remain thin.
+
+Bad:
+
+```ts
+tool = 200 lines logic
+```
+
+Good:
+
+```ts
+tool -> service
+```
+
+---
+
+## 6. services/epicService.ts
+
+Purpose:
+
+Business logic for epic operations.
+
+Contains:
+
+### createEpic()
+
+Responsibilities:
+
+- apply naming convention
+- add epic label
+- create GitLab issue
+
+Transform:
+
+```text
+Client Authentication
+```
+
+Into:
+
+```text
+[EPIC] Client Authentication
+```
+
+with label:
+
+```text
+epic
+```
+
+Then create issue in GitLab.
+
+---
+
+### getEpic()
+
+Responsibilities:
+
+- retrieve GitLab issue
+- verify epic label exists
+- return normalized response
+
+Example response:
+
+```json
+{
+  "epicId": 123,
+  "title": "[EPIC] Client Authentication",
+  "description": "Client onboarding flow",
+  "labels": ["epic"],
+  "webUrl": "https://gitlab..."
+}
+```
+
+---
+
+## 7. utils/markdown.ts
+
+Purpose:
+
+Reusable markdown generation.
+
+Example:
+
+```ts
+export function buildEpicDescription() {
+   return `
+## Objective
+TBD
+
+## Scope
+TBD
+`;
+}
+```
+
+Keeps markdown templates out of service logic.
+
+---
+
+# Runtime Flow
+
+## create_epic()
+
+Prompt:
+
+```text
+Create epic Client Authentication
+projectId=10
+```
+
+Execution:
+
+```text
+AI Agent
+    |
+    v
+create_epic()
+    |
+    v
+index.ts
+    |
+    v
+tools/createEpic.ts
+    |
+    v
+services/epicService.ts
+    |
+    v
+gitlabClient.ts
+    |
+    v
+GitLab REST API
+    |
+    v
+GitLab issue created
+```
+
+Result:
+
+```text
+[EPIC] Client Authentication
+label: epic
+```
+
+---
+
+## get_epic()
+
+Prompt:
+
+```text
+Get epic 123
+projectId=10
+```
+
+Execution:
+
+```text
+AI Agent
+    |
+    v
+get_epic()
+    |
+    v
+index.ts
+    |
+    v
+tools/getEpic.ts
+    |
+    v
+services/epicService.ts
+    |
+    v
+gitlabClient.ts
+    |
+    v
+GitLab REST API
+```
+
+Returns:
+
+```json
+{
+  "epicId": 123,
+  "title": "[EPIC] Client Authentication",
+  "status": "opened"
+}
+```
+
+---
+
+# MCP Tool Contracts
+
+## create_epic
+
+Input:
+
+```json
+{
+  "projectId": 10,
+  "title": "Client Authentication",
+  "description": "Authentication capability"
+}
+```
+
+Output:
+
+```json
+{
+  "epicId": 123,
+  "title": "[EPIC] Client Authentication",
+  "webUrl": "https://gitlab..."
+}
+```
+
+---
+
+## get_epic
+
+Input:
+
+```json
+{
+  "projectId": 10,
+  "epicId": 123
+}
+```
+
+Output:
+
+```json
+{
+  "epicId": 123,
+  "title": "[EPIC] Client Authentication",
+  "description": "...",
+  "labels": ["epic"]
+}
+```
+
+---
+
+# package.json
+
+```json
+{
+  "name": "gitlab-epic-mcp",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@gitbeaker/rest": "^41.0.0",
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.25.0"
+  }
+}
+```
+
+---
+
+# Why This Structure
+
+You only need:
+
+```text
+create_epic
+get_epic
+```
+
+So keep architecture minimal.
+
+Avoid overengineering.
+
+Good balance:
+
+```text
+Tool Layer
+    ↓
+Service Layer
+    ↓
+GitLab Client
+```
+
+This keeps implementation clean while remaining easy to extend later if needed.
