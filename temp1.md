@@ -11,7 +11,7 @@ GitHub Copilot in VS Code operates across four distinct interaction modes:
 
 | Mode | What it does | Token cost |
 |---|---|---|
-| **Inline Completions** | Ghost-text suggestions as you type | Free (base model, unlimited) |
+| **Inline Completions** | Ghost-text suggestions as you type | Not billed in AI Credits — unlimited on paid plans |
 | **Chat (Ask mode)** | Single-turn Q&A in the Chat panel | Low–Medium |
 | **Copilot Edits** | Multi-file edits driven by a single prompt | Medium |
 | **Agent Mode** | Autonomous multi-step tasks — reads files, runs terminal, iterates, calls tools | High |
@@ -44,7 +44,7 @@ This is the most important thing to internalise. Every item loaded into context 
 | Org-level instructions | GitHub organisation settings | **Always** — every request within the org | Organisation | Set once, applies everywhere in the org |
 | `.instructions.md` files | `.github/instructions/*.instructions.md` | **Conditional** — only when the active/referenced file matches `applyTo:` glob | File-pattern scoped | Efficient: only fires when the matched file type is in scope |
 | Prompt files (`.prompt.md`) | `.github/prompts/*.prompt.md` | **On-demand only** — when you invoke `/command-name` in Chat | Per invocation | No passive cost; consumed only when triggered |
-| Custom agent (`.agent.md`) | `.github/agents/*.agent.md` | **Conditional** — system prompt injected only when that agent is selected in Chat | Per agent selection | Zero cost unless the agent is active |
+| Custom agent (`.agent.md`) | `.github/agents/*.agent.md` | **Conditional** — system prompt injected only when that agent is selected in Chat | Per agent selection | No cost unless the agent is active |
 | Agent Skills — metadata only | `.github/skills/<name>/SKILL.md` | **Always** (startup) — only `name` + `description` fields (~100 tokens per skill) loaded for all discovered skills | All skills, always | Minimal; write tight descriptions — this is what Copilot reads to decide relevance |
 | Agent Skills — full body | `.github/skills/<name>/SKILL.md` | **Conditional** — full `SKILL.md` body loaded only when the agent matches your intent to this skill's description | Per activation | Keep body under 5,000 tokens (recommended); split larger content into referenced files |
 | Agent Skills — resource files | `.github/skills/<name>/scripts/`, `references/`, etc. | **On-demand** — loaded only as the agent explicitly references them during execution | Per file access | Not loaded speculatively; smaller reference files = less context consumed per use |
@@ -119,7 +119,7 @@ flowchart TD
     B --> OT["📤 Output Tokens\nEverything returned FROM the model:\ncode · explanations · diffs\n⚠️ Most expensive token type"]
     B --> CT["♻️ Cached Tokens\nInput tokens reused from\nprior request within ~5 min\n~10% of normal input price"]
 
-    IT --> IO["✅ Optimise input:\n• Keep instructions lean\n• Use #file: not #codebase\n• Disable unused MCP servers\n• New thread per task"]
+    IT --> IO["✅ Optimise input:\n• Keep instructions lean\n• Use #file: not #codebase\n• Disable unused MCP servers\n• New thread per task\n• Use included models for routine chat\n  (GPT-4.1, GPT-5 mini, GPT-4o)"]
     OT --> OO["✅ Optimise output:\n• Use slash commands /fix /tests\n• Scope agent tasks tightly\n• Choose cheaper model\n• Ask for shorter response shapes"]
     CT --> CO["✅ Maximise cache hits:\n• Keep copilot-instructions.md stable\n• Reuse prompt files (consistent payload)\n• VS Code 1.118: >93% cache reuse\n  in active agent sessions"]
 
@@ -132,14 +132,21 @@ flowchart TD
     style CO fill:#14143a,color:#ccc,stroke:#7986cb
 ```
 
-**Model cost spread is an order of magnitude wide:**
+**What is and isn't billed:**
+
+- **Code completions and Next Edit Suggestions** — unlimited on all paid plans, **not billed in AI Credits at all**
+- **Chat, Agent Mode, Copilot Edits** — all consume AI Credits from your monthly plan allowance, at per-token rates that vary by model
+
+**Model cost spread across Chat and Agent interactions:**
 
 | Model | Input ($/M tokens) | Output ($/M tokens) | Relative cost |
 |---|---|---|---|
-| GPT-4.1 / GPT-5 mini | **Free (included)** | **Free (included)** | Zero credits |
+| GPT-4.1 / GPT-5 mini / GPT-4o | Draws from included allowance | Draws from included allowance | Lowest — use these for routine Chat |
 | Claude Haiku 4.5 | Low | ~$5 | Very low |
 | Claude Sonnet 4.6 | ~$3 | ~$15 | Medium |
-| Claude Opus 4.x / GPT-5.5 | ~$15–75 | ~$25–75 | Very high |
+| Claude Opus 4.x / GPT-5.5 | ~$15–75 | ~$25–75 | Very high — justify the quality gap |
+
+> **Note:** GPT-4.1, GPT-5 mini, and GPT-4o are the "included" models — on paid plans they draw from your monthly credit allowance without causing paid overage under normal use. Every other model is metered at published token rates from the first token.
 
 > **Rule #1 — Match model to task.** The same agent session costs ~$0.007 on a nano model vs ~$1.85 on GPT-5.5 — a 24× gap. Output tokens dominate cost: a 5K-token input with 50K-token output on GPT-5.5 costs ~$1.53 vs ~$0.23 on a flash model.
 
@@ -222,12 +229,12 @@ No Lombok. No field injection.
 
 ### 4.4 Prefer Inline Completions for Boilerplate
 
-Inline completions are **free** (base model, unlimited). For DTOs, getters, test skeletons, import statements — let ghost-text complete rather than opening Chat. Guide completions with a leading comment:
+Inline completions are **not billed in AI Credits** — they remain unlimited on all paid plans regardless of model. For DTOs, getters, test skeletons, import statements — let ghost-text complete rather than opening Chat. Guide completions with a leading comment:
 
 ```java
 // Returns active users sorted by registration date, most recent first
 public List<User> getActiveUsersSortedByRegistration() {
-    // start typing — Copilot completes the body at zero credit cost
+    // start typing — Copilot completes the body; not billed in AI Credits
 ```
 
 A clear comment before the method signature is the cheapest and most reliable Copilot input.
@@ -331,10 +338,10 @@ Any `.prompt.md` file in `.github/prompts/` becomes a `/command-name` in Chat. R
 
 | Scenario | Recommended approach | Why |
 |---|---|---|
-| Write boilerplate / DTOs | Inline completions | Free, zero credits |
+| Write boilerplate / DTOs | Inline completions | Not billed in AI Credits — unlimited on paid plans |
 | Explain unfamiliar code | `/explain` + `#file:` | Scoped, low output |
 | Generate tests for a file | `/tests` | Bounded output surface |
-| One-off quick question | Chat, free model (GPT-4.1) | Zero credits |
+| One-off quick question | Chat, included model (GPT-4.1) | Draws from included allowance; no paid overage |
 | Complex reasoning / architecture | Chat, Sonnet 4.6 | Good quality-to-cost ratio |
 | Multi-file feature | Agent Mode, Sonnet 4.6, scoped prompt | Controlled cost |
 | Frontier reasoning (rare) | Agent Mode, Opus / GPT-5.5 | High cost — justify the gap |
