@@ -18,9 +18,9 @@ GitHub Copilot in VS Code operates across four distinct interaction modes:
 
 **Key features (VS Code):**
 
-- **`copilot-instructions.md`** — Persistent instruction file at `.github/copilot-instructions.md`; injected into *every* Chat and Agent request automatically. Single most impactful customisation file. ([GitHub Blog](https://github.blog/ai-and-ml/github-copilot/5-tips-for-writing-better-custom-instructions-for-copilot/))
+- **`copilot-instructions.md`** — Persistent instruction file at `.github/copilot-instructions.md`; injected into *every* Chat and Agent request automatically. Single most impactful customisation file.
 - **Path-specific instructions** — `.github/instructions/*.instructions.md` with `applyTo:` frontmatter, scoped to file patterns (e.g., only `*.test.ts` files).
-- **Prompt files** — `.github/prompts/*.prompt.md`; reusable, triggerable task blueprints invoked as `/command-name` in Chat. ([GitHub Announcement](https://github.com/newsroom/press-releases/agent-mode))
+- **Prompt files** — `.github/prompts/*.prompt.md`; reusable, triggerable task blueprints invoked as `/command-name` in Chat.
 - **Agent Skills** — Folders of instructions, scripts, and resources loaded on-demand when relevant to the task. Open standard ([agentskills.io](https://agentskills.io)), portable across VS Code, Copilot CLI, and cloud agent.
 - **`#codebase` context** — Semantic + keyword + file-name multi-strategy workspace search before responding.
 - **Next Edit Suggestions** — Predicts and pre-fills the next likely edit after a change; press `Tab` to accept.
@@ -95,7 +95,7 @@ flowchart LR
 
 The VS Code extension assembles the full prompt *locally* before a single byte leaves your machine. Every item in the always-loaded category above becomes input tokens before the request even reaches GitHub. The GitHub Proxy filters and routes — it does not compress or summarise. The model provider (Anthropic, OpenAI, etc.) receives the exact payload and applies **prompt caching**: stable content (system prompt, large instruction blocks, recurring file blobs) is cached with a ~5-minute window and costs roughly **10% of normal input token price** on reuse.
 
-VS Code 1.118 (April 2026) added client-side prompt caching achieving **>93% cache reuse per agent turn** for stable context — a significant cost reduction for agentic sessions. ([Visual Studio Magazine](https://visualstudiomagazine.com/articles/2026/04/30/vs-code-curbs-token-use-ahead-of-copilots-controversial-usage-based-billing-switch.aspx))
+VS Code 1.118 (April 2026) added client-side prompt caching achieving **>93% cache reuse per agent turn** for stable context — a significant cost reduction for agentic sessions.
 
 The model itself is **stateless**: it has no memory between calls. Full conversation history is re-sent on every turn, which is the primary driver of rising input costs in long chat threads.
 
@@ -107,7 +107,30 @@ The model itself is **stateless**: it has no memory between calls. Full conversa
 
 ### 4.1 Understand the Billing Model (June 2026)
 
-As of June 1, 2026, Copilot moved from flat Premium Request Units to **token-based AI Credits** (`1 Credit = $0.01`). Consumption covers input + output + cached tokens, priced per model. ([GitHub Blog](https://github.blog/news-insights/company-news/github-copilot-is-moving-to-usage-based-billing/))
+As of June 1, 2026, Copilot moved from flat Premium Request Units to **token-based AI Credits** (`1 Credit = $0.01`). Plan included credits: Pro $15/mo · Pro+ $39/mo · Business $19/user · Enterprise $39/user — overage billed at each model's published token rate.
+
+**What gets billed — and how to optimise each type:**
+
+```mermaid
+flowchart TD
+    B["💳 GitHub AI Credits\n1 Credit = $0.01\nConsumed per request"]
+
+    B --> IT["📥 Input Tokens\nEverything sent TO the model:\nsystem prompt · instructions ·\ncontext files · history · tools"]
+    B --> OT["📤 Output Tokens\nEverything returned FROM the model:\ncode · explanations · diffs\n⚠️ Most expensive token type"]
+    B --> CT["♻️ Cached Tokens\nInput tokens reused from\nprior request within ~5 min\n~10% of normal input price"]
+
+    IT --> IO["✅ Optimise input:\n• Keep instructions lean\n• Use #file: not #codebase\n• Disable unused MCP servers\n• New thread per task"]
+    OT --> OO["✅ Optimise output:\n• Use slash commands /fix /tests\n• Scope agent tasks tightly\n• Choose cheaper model\n• Ask for shorter response shapes"]
+    CT --> CO["✅ Maximise cache hits:\n• Keep copilot-instructions.md stable\n• Reuse prompt files (consistent payload)\n• VS Code 1.118: >93% cache reuse\n  in active agent sessions"]
+
+    style B fill:#1e3a5f,color:#fff,stroke:#4a90d9
+    style IT fill:#1a4a2e,color:#fff,stroke:#4caf50
+    style OT fill:#4a2c00,color:#fff,stroke:#ff9800
+    style CT fill:#2a2a5f,color:#fff,stroke:#7986cb
+    style IO fill:#0d2e1a,color:#ccc,stroke:#4caf50
+    style OO fill:#2e1a00,color:#ccc,stroke:#ff9800
+    style CO fill:#14143a,color:#ccc,stroke:#7986cb
+```
 
 **Model cost spread is an order of magnitude wide:**
 
@@ -118,7 +141,7 @@ As of June 1, 2026, Copilot moved from flat Premium Request Units to **token-bas
 | Claude Sonnet 4.6 | ~$3 | ~$15 | Medium |
 | Claude Opus 4.x / GPT-5.5 | ~$15–75 | ~$25–75 | Very high |
 
-> **Rule #1 — Match model to task.** The same agent session costs ~$0.007 on a nano model vs ~$1.85 on GPT-5.5 — a 24× gap. ([DEV Community](https://dev.to/tokenmixai/i-did-the-math-on-github-copilots-new-ai-credits-billing-the-24x-price-gap-changes-everything-5h99)) Output tokens dominate cost: a 5K-token input with 50K-token output on GPT-5.5 costs ~$1.53 vs ~$0.23 on a flash model.
+> **Rule #1 — Match model to task.** The same agent session costs ~$0.007 on a nano model vs ~$1.85 on GPT-5.5 — a 24× gap. Output tokens dominate cost: a 5K-token input with 50K-token output on GPT-5.5 costs ~$1.53 vs ~$0.23 on a flash model.
 
 ---
 
@@ -168,12 +191,12 @@ These fire only when a test file is active — not on every Java or YAML request
 ```
 
 **d) Start a new Chat thread per task.**  
-The model is stateless; each turn re-sends full history. Long threads with stale context raise input costs on every follow-up. New thread = clean slate. ([SmartScope](https://smartscope.blog/en/generative-ai/github-copilot/github-copilot-ai-credits-optimization-2026/))
+The model is stateless; each turn re-sends full history. Long threads with stale context raise input costs on every follow-up. New thread = clean slate.
 
 **e) Disable MCP servers you are not actively using.**  
 Each connected MCP server injects its tool definitions on every Agent step (~100–500 tokens each), even if you never call that tool.
 
-> In VS Code: open the Chat panel → click the **tools icon** (wrench) → untick individual MCP servers before a session. Or go to `Settings → search "mcp"` to disable at the server level. ([GitHub token optimisation](https://github.com/olivomarco/github-copilot-token-optimization))
+> In VS Code: open the Chat panel → click the **tools icon** (wrench) → untick individual MCP servers before a session. Or go to `Settings → search "mcp"` to disable at the server level.
 
 **f) Close irrelevant open tabs.**  
 Open editor tabs are used as implicit context for inline completions. Close anything not relevant to the current task.
@@ -234,7 +257,7 @@ Invoke with: `/new-controller entity=Order` — Copilot already knows the stack 
 
 ### 4.6 Agent Mode — Use With a Budget in Mind
 
-Agent Mode is the most token-intensive workflow. A scoped architecture-and-refactor session on Sonnet 4.6 (~10K context + 40K diff) costs approximately **~$1.45 in credits**. ([Bodega One](https://www.bodegaone.ai/blog/github-copilot-ai-credits-math-explained)) An unbounded session over a large codebase can exhaust a Pro monthly budget in one run.
+Agent Mode is the most token-intensive workflow. A scoped architecture-and-refactor session on Sonnet 4.6 (~10K context + 40K diff) costs approximately **~$1.45 in credits**. An unbounded session over a large codebase can exhaust a Pro monthly budget in one run.
 
 **Before running Agent Mode:**
 
@@ -260,7 +283,7 @@ Before optimising, measure. VS Code has a built-in token inspector:
 
 > **Command Palette → `Developer: Show Chat Debug View`**
 
-This shows per-turn breakdowns: system prompt tokens, context tokens, cached tokens, output tokens, and model used. Use it to identify which requests are expensive and why before changing behaviour. ([Simform Engineering](https://medium.com/simform-engineering/github-copilot-token-usage-explained-with-practical-cost-control-03062b15ecb0))
+This shows per-turn breakdowns: system prompt tokens, context tokens, cached tokens, output tokens, and model used. Use it to identify which requests are expensive and why before changing behaviour.
 
 ---
 
@@ -300,7 +323,7 @@ Slash commands are shorthand prompts for common tasks. They constrain the output
 
 ### Custom prompt files as slash commands
 
-Any `.prompt.md` file in `.github/prompts/` becomes a `/command-name` in Chat. Recommended for team-standard workflows — one consistent, cache-friendly invocation rather than a re-typed multi-line prompt each time. No passive token cost (see loading table). ([DEV Community](https://dev.to/petermilovcik/vs-code-prompt-files-custom-slash-commands-for-github-copilot-1m4f))
+Any `.prompt.md` file in `.github/prompts/` becomes a `/command-name` in Chat. Recommended for team-standard workflows — one consistent, cache-friendly invocation rather than a re-typed multi-line prompt each time. No passive token cost (see loading table).
 
 ---
 
